@@ -7,6 +7,8 @@ export default function Header() {
         <nav className="nav">
           <Link href="/annuaire">Annuaire</Link>
           <Link href="/guides">Guides</Link>
+          <Link href="/besoins">Besoins</Link>
+          <Link href="/publier">Publier</Link>
           <Link href="/espace">Mon espace</Link>
           <Link href="/devis" className="btn btn-sm">Demander un devis</Link>
         </nav>
