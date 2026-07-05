@@ -1,4 +1,4 @@
-# Ayôrôfa BTP — Plateforme de mise en relation (Next.js)
+# Ayôrôfa Connect — Plateforme de mise en relation (Next.js)
 
 Site de mise en relation BTP & échafaudage (Côte d'Ivoire). App Router, données d'exemple,
 monétisation intégrée (sponsors + AdSense + Analytics), SEO (sitemap/robots/metadata).

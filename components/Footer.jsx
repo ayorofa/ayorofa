@@ -4,8 +4,8 @@ export default function Footer() {
     <footer className="ftr">
       <div className="wrap ftr-in">
         <div>
-          <div className="brand"><span className="brand-mark">▲</span> Ayôrôfa <b>BTP</b></div>
-          <p className="muted">La mise en relation BTP & échafaudage en Côte d’Ivoire.</p>
+          <div className="brand"><span className="brand-mark">▲</span> Ayôrôfa <b>Connect</b></div>
+          <p className="muted">La mise en relation professionnelle en Côte d’Ivoire — par Ayôrôfa.</p>
         </div>
         <nav className="ftr-nav">
           <Link href="/annuaire">Annuaire</Link>
@@ -14,7 +14,7 @@ export default function Footer() {
           <Link href="/confidentialite">Confidentialité</Link>
         </nav>
       </div>
-      <div className="wrap ftr-copy">© {new Date().getFullYear()} Ayôrôfa BTP — Abidjan, Côte d’Ivoire</div>
+      <div className="wrap ftr-copy">© {new Date().getFullYear()} Ayôrôfa Connect — Abidjan, Côte d’Ivoire</div>
     </footer>
   );
 }

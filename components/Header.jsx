@@ -4,7 +4,7 @@ export default function Header() {
   return (
     <header className="hdr">
       <div className="wrap hdr-in">
-        <Link href="/" className="brand"><span className="brand-mark">▲</span> Ayôrôfa <b>BTP</b></Link>
+        <Link href="/" className="brand"><span className="brand-mark">▲</span> Ayôrôfa <b>Connect</b></Link>
         <nav className="nav">
           <Link href="/annuaire">Annuaire</Link>
           <Link href="/besoins">Besoins</Link>

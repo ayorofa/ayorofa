@@ -7,8 +7,8 @@ import CookieConsent from '@/components/CookieConsent';
 
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://btp.ayorofa.com'),
-  title: { default: 'Ayôrôfa BTP — Trouvez un pro du BTP & de l’échafaudage en Côte d’Ivoire', template: '%s · Ayôrôfa BTP' },
-  description: 'Trouvez, comparez et contactez des professionnels du BTP et de l’échafaudage à Abidjan. Devis rapides, pros vérifiés.',
+  title: { default: 'Ayôrôfa Connect — La mise en relation BTP, emploi & services en Côte d’Ivoire', template: '%s · Ayôrôfa Connect' },
+  description: 'Ayôrôfa Connect met en relation entreprises, particuliers et chercheurs d’emploi : besoins, offres et services (BTP, échafaudage et plus) en Côte d’Ivoire, en temps réel.',
 };
 
 export default function RootLayout({ children }) {

@@ -5,7 +5,7 @@ export default function Confidentialite() {
       <div className="wrap prose">
         <h1>Politique de confidentialité</h1>
         <p className="muted">Dernière mise à jour : 2026</p>
-        <p>Ayôrôfa BTP collecte les données nécessaires à la mise en relation (nom, téléphone, ville, description de chantier), mesure son audience (Google Analytics) et affiche de la publicité (Google AdSense). Les paiements éventuels sont traités par CinetPay / PayDunya ; nous ne stockons pas vos données bancaires.</p>
+        <p>Ayôrôfa Connect collecte les données nécessaires à la mise en relation (nom, téléphone, ville, description de chantier), mesure son audience (Google Analytics) et affiche de la publicité (Google AdSense). Les paiements éventuels sont traités par CinetPay / PayDunya ; nous ne stockons pas vos données bancaires.</p>
         <h2>Vos droits</h2>
         <p>Vous pouvez demander l’accès, la rectification ou la suppression de vos données en écrivant à [email].</p>
         <h2>Cookies</h2>
