@@ -55,7 +55,12 @@ export default function Besoins() {
                   <h3 style={{ margin: '8px 0 4px' }}>{b.titre}</h3>
                   <p className="muted sm">{m ? m.name : b.metier}{b.ville ? ` · ${b.ville}` : ''}</p>
                   {b.description && <p style={{ marginTop: 8 }}>{b.description}</p>}
-                  {b.auteur !== uid && <button className="btn btn-sm" style={{ marginTop: 10 }} onClick={() => interesse(b)}>Ça m’intéresse</button>}
+                  {b.auteur !== uid && (
+                    <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
+                      <button className="btn btn-sm" onClick={() => interesse(b)}>Ça m’intéresse</button>
+                      <a className="btn btn-sm" style={{ background: 'transparent', border: '1px solid var(--line)', color: 'var(--text)' }} href={`/messages?to=${b.auteur}`}>Contacter</a>
+                    </div>
+                  )}
                 </div>
               );
             })}
