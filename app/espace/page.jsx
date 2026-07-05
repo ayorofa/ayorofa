@@ -82,6 +82,7 @@ export default function Espace() {
         <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 8 }}>
           <Link className="btn btn-sm" href="/publier">Publier un besoin</Link>
           <Link className="btn btn-sm" href="/besoins" style={ghost}>Voir le fil</Link>
+          <Link className="btn btn-sm" href="/profil/modifier" style={ghost}>Modifier mon profil</Link>
           <button className="btn btn-sm" onClick={logout} style={ghost}>Se déconnecter</button>
         </div>
       </div>

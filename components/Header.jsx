@@ -9,6 +9,7 @@ export default function Header() {
           <Link href="/annuaire">Annuaire</Link>
           <Link href="/besoins">Besoins</Link>
           <Link href="/publier">Publier</Link>
+          <Link href="/recherche">Recherche</Link>
           <UserNav />
           <Link href="/devis" className="btn btn-sm">Demander un devis</Link>
         </nav>
