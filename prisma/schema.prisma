@@ -1,0 +1,52 @@
+// Schéma Prisma pour la vraie base (PostgreSQL). Étape suivante :
+//   npm i prisma @prisma/client && npx prisma migrate dev
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "postgresql"; url = env("DATABASE_URL") }
+
+model User {
+  id        String   @id @default(cuid())
+  nom       String
+  telephone String   @unique
+  email     String?  @unique
+  role      Role     @default(CLIENT)
+  pro       Pro?
+  devis     Devis[]
+  createdAt DateTime @default(now())
+}
+
+model Pro {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  slug      String   @unique
+  metier    String
+  ville     String
+  desc      String
+  verifie   Boolean  @default(false)
+  note      Float    @default(0)
+  avis      Review[]
+  createdAt DateTime @default(now())
+}
+
+model Devis {
+  id        String   @id @default(cuid())
+  client    User?    @relation(fields: [clientId], references: [id])
+  clientId  String?
+  metier    String
+  ville     String
+  message   String
+  statut    String   @default("NOUVEAU")
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id     String @id @default(cuid())
+  pro    Pro    @relation(fields: [proId], references: [id])
+  proId  String
+  note   Int
+  texte  String?
+  auteur String
+  createdAt DateTime @default(now())
+}
+
+enum Role { CLIENT PRO ADMIN }
