@@ -239,3 +239,22 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .conv{display:flex;align-items:center;gap:11px}
 .conv-t{min-width:0;flex:1}
 .chat-head{display:flex;align-items:center;gap:10px}
+
+/* ---------- FIL PUBLIC ---------- */
+.hero-slim{padding:26px 0 30px}
+.hero-slim h1{font-size:1.55rem;max-width:22ch}
+.hero-slim p{font-size:.96rem;margin-bottom:14px}
+.feed{max-width:680px}
+.feed-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.chip{flex:0 0 auto;background:#fff;border:1px solid var(--line);color:var(--muted);
+  border-radius:20px;padding:9px 16px;font-size:.88rem;font-weight:700;cursor:pointer;min-height:40px}
+.chip.on{background:var(--ink);color:var(--gold-l);border-color:var(--ink)}
+.feed-filters{display:flex;gap:8px;margin-top:10px}
+.feed-filters select{flex:1;padding:11px;border:1px solid var(--line);border-radius:11px;
+  font-size:16px;background:#fff;color:var(--text);min-height:46px}
+.joinbox{background:linear-gradient(165deg,var(--ink),var(--ink2));color:var(--ivoire);
+  border-radius:18px;padding:22px;margin-top:14px;text-align:center}
+.joinbox h3{color:var(--ivoire);margin:0 0 6px}
+.joinbox p{color:#cfc4ad;font-size:.94rem;margin:0 0 14px}
+@media(min-width:860px){ .hero-slim h1{font-size:2rem} }

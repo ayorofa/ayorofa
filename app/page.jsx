@@ -1,76 +1,138 @@
+'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import SearchBar from '@/components/SearchBar';
-import ProCard from '@/components/ProCard';
+import { supabase } from '@/lib/supabaseClient';
+import BesoinCard from '@/components/BesoinCard';
 import SponsorBanner from '@/components/SponsorBanner';
 import { METIERS } from '@/data/metiers';
-import { PROS } from '@/data/pros';
+import { VILLES } from '@/data/villes';
 
-export default function Home() {
-  const vedettes = PROS.filter((p) => p.verifie).slice(0, 6);
+const FILTRES = [
+  { v: '', label: 'Tout' },
+  { v: 'demande', label: 'Demandes' },
+  { v: 'offre_emploi', label: "Offres d'emploi" },
+  { v: 'recherche', label: 'Chercheurs' },
+];
+
+export default function Accueil() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [uid, setUid] = useState(null);
+  const [type, setType] = useState('');
+  const [metier, setMetier] = useState('');
+  const [ville, setVille] = useState('');
+
+  useEffect(() => {
+    if (!supabase) { setLoading(false); return; }
+    let channel;
+    (async () => {
+      // Qui regarde ? (visiteur = null, c'est permis)
+      const { data: { user } } = await supabase.auth.getUser();
+      setUid(user ? user.id : null);
+
+      // Le fil, du plus récent au plus ancien — visible par TOUS
+      const { data } = await supabase.from('besoins').select('*')
+        .order('created_at', { ascending: false }).limit(50);
+      setItems(data || []);
+      setLoading(false);
+
+      // Nouvelles annonces en direct, insérées en haut
+      channel = supabase.channel('accueil-feed')
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'besoins' },
+          (payload) => setItems((cur) => [payload.new, ...cur]))
+        .subscribe();
+    })();
+    return () => { if (channel) supabase.removeChannel(channel); };
+  }, []);
+
+  const vus = items.filter((b) =>
+    (!type || b.type === type) &&
+    (!metier || b.metier === metier) &&
+    (!ville || b.ville === ville));
+
   return (
     <>
-      <section className="hero">
-        <div className="wrap">
-          <p className="eyebrow" style={{ color: 'var(--gold-l)' }}>La plateforme de mise en relation</p>
-          <h1>Un besoin d’un côté. Un talent de l’autre.<br />Ayôrôfa Connect les réunit.</h1>
-          <p>
-            Entreprises, particuliers, chercheurs d’emploi : publiez, échangez et trouvez la bonne
-            personne — en direct, partout en Côte d’Ivoire.
-          </p>
-          <SearchBar />
-          <div className="hero-cta">
-            <Link href="/inscription" className="btn">Créer mon compte — gratuit</Link>
-            <Link href="/abonnements" className="btn btn-onink">Voir les formules</Link>
+      {/* Bandeau d'accueil : court, il ne doit pas repousser le fil */}
+      {!uid && (
+        <section className="hero hero-slim">
+          <div className="wrap">
+            <p className="eyebrow" style={{ color: 'var(--gold-l)' }}>La plateforme de mise en relation</p>
+            <h1>Un besoin d’un côté. Un talent de l’autre.</h1>
+            <p>Découvrez les annonces en direct. Créez un compte gratuit pour publier, réagir et discuter.</p>
+            <div className="hero-cta">
+              <Link href="/inscription" className="btn">Créer mon compte — gratuit</Link>
+              <Link href="/abonnements" className="btn btn-onink">Voir les formules</Link>
+            </div>
           </div>
-          <p className="hero-sub">
-            <Link href="/besoins">Voir le fil en direct →</Link>
-          </p>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="sec">
-        <div className="wrap">
-          <p className="eyebrow">Nos métiers</p>
-          <h2>Que recherchez-vous ?</h2>
-          <div className="grid g4" style={{ marginTop: 18 }}>
-            {METIERS.map((m) => (
-              <Link key={m.slug} href={`/annuaire?metier=${m.slug}`} className="card metier-card">
-                <h3>{m.name}</h3>
-                <p className="muted sm">{m.desc}</p>
-              </Link>
+      <main className="sec">
+        <div className="wrap feed">
+          <div className="feed-head">
+            <div>
+              <p className="eyebrow">En direct 🔴</p>
+              <h2 style={{ margin: 0 }}>Besoins & opportunités</h2>
+            </div>
+            <Link href={uid ? '/publier' : '/inscription'} className="btn btn-sm">Publier</Link>
+          </div>
+
+          {/* Filtres rapides */}
+          <div className="chips" role="tablist" aria-label="Filtrer le fil">
+            {FILTRES.map((f) => (
+              <button key={f.v} className={'chip' + (type === f.v ? ' on' : '')} onClick={() => setType(f.v)}>
+                {f.label}
+              </button>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="sec" style={{ paddingTop: 0 }}>
-        <div className="wrap"><SponsorBanner slot="home" /></div>
-      </section>
-
-      <section className="sec" style={{ paddingTop: 0 }}>
-        <div className="wrap">
-          <p className="eyebrow">Pros vérifiés</p>
-          <h2>Professionnels en vedette</h2>
-          <div className="grid g3" style={{ marginTop: 18 }}>
-            {vedettes.map((p) => <ProCard key={p.slug} pro={p} />)}
+          <div className="feed-filters">
+            <select value={metier} onChange={(e) => setMetier(e.target.value)} aria-label="Métier">
+              <option value="">Tous les métiers</option>
+              {METIERS.map((m) => <option key={m.slug} value={m.slug}>{m.name}</option>)}
+            </select>
+            <select value={ville} onChange={(e) => setVille(e.target.value)} aria-label="Ville">
+              <option value="">Toute la ville</option>
+              {VILLES.map((v) => <option key={v} value={v}>{v}</option>)}
+            </select>
           </div>
-        </div>
-      </section>
 
-      <section className="sec" style={{ background: '#fff', borderTop: '1px solid var(--line)' }}>
-        <div className="wrap">
-          <p className="eyebrow">Comment ça marche</p>
-          <h2>Simple, rapide, gratuit</h2>
-          <div className="grid g3 steps" style={{ marginTop: 26 }}>
-            <div className="step"><h3>Publiez</h3><p className="muted">Un besoin, une offre ou votre recherche — en 2 minutes.</p></div>
-            <div className="step"><h3>Recevez</h3><p className="muted">Des propositions et des contacts, en temps réel.</p></div>
-            <div className="step"><h3>Choisissez</h3><p className="muted">Discutez par messagerie et concluez en confiance.</p></div>
-          </div>
-          <div style={{ marginTop: 28 }}>
-            <Link href="/inscription" className="btn">Rejoindre la communauté</Link>
-          </div>
+          <div style={{ margin: '16px 0' }}><SponsorBanner slot="home" /></div>
+
+          {loading ? (
+            <p className="muted">Chargement du fil…</p>
+          ) : vus.length ? (
+            <div style={{ display: 'grid', gap: 14 }}>
+              {vus.map((b, i) => (
+                <div key={b.id}>
+                  <BesoinCard b={b} me={uid} />
+                  {/* Invitation à rejoindre, glissée dans le fil */}
+                  {!uid && i === 2 && (
+                    <div className="joinbox">
+                      <h3>Rejoignez la communauté</h3>
+                      <p>Créez un compte gratuit pour publier une annonce, réagir et contacter les membres.</p>
+                      <Link href="/inscription" className="btn">Créer mon compte — gratuit</Link>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="card">
+              <h3>Le fil est encore calme</h3>
+              <p className="muted">Soyez le premier à publier un besoin ou une offre.</p>
+              <Link href={uid ? '/publier' : '/inscription'} className="btn btn-sm">Publier une annonce</Link>
+            </div>
+          )}
+
+          {!uid && vus.length > 0 && (
+            <div className="joinbox" style={{ marginTop: 20 }}>
+              <h3>Vous voulez répondre à ces annonces ?</h3>
+              <p>L’inscription est gratuite et prend 2 minutes.</p>
+              <Link href="/inscription" className="btn">Créer mon compte</Link>
+            </div>
+          )}
         </div>
-      </section>
+      </main>
     </>
   );
 }

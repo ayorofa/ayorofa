@@ -34,7 +34,7 @@ export default function BesoinCard({ b, me }) {
   }, [b.id, me]);
 
   const toggleLike = async () => {
-    if (!me) { window.location.href = '/connexion'; return; }
+    if (!me) { window.location.href = '/inscription'; return; }
     if (liked) { await supabase.from('reactions').delete().eq('besoin', b.id).eq('auteur', me); setLiked(false); setLikes((x) => x - 1); }
     else { await supabase.from('reactions').insert({ besoin: b.id, auteur: me }); setLiked(true); setLikes((x) => x + 1); }
   };
@@ -52,12 +52,12 @@ export default function BesoinCard({ b, me }) {
   const addComment = async (e) => {
     e.preventDefault();
     if (!ctext.trim()) return;
-    if (!me) { window.location.href = '/connexion'; return; }
+    if (!me) { window.location.href = '/inscription'; return; }
     await supabase.from('commentaires').insert({ besoin: b.id, auteur: me, texte: ctext.trim() });
     setCtext(''); await loadComments();
   };
   const interesse = async () => {
-    if (!me) { window.location.href = '/connexion'; return; }
+    if (!me) { window.location.href = '/inscription'; return; }
     await supabase.from('notifications').insert({ destinataire: b.auteur, besoin: b.id });
     alert('Votre intérêt a été envoyé ✓');
   };
@@ -86,11 +86,12 @@ export default function BesoinCard({ b, me }) {
       {b.description && <p style={{ marginTop: 6 }}>{b.description}</p>}
       {b.lien && <p style={{ marginTop: 6 }}><a href={b.lien} target="_blank" rel="noopener">Voir l’annonce d’origine ↗</a></p>}
 
-      <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap', alignItems: 'center' }}>
         <button className="btn btn-sm" style={liked ? {} : ghost} onClick={toggleLike}>👍 {likes}</button>
-        <button className="btn btn-sm" style={ghost} onClick={openC}>💬 Commentaires</button>
-        {b.auteur !== me && <button className="btn btn-sm" onClick={interesse}>Ça m’intéresse</button>}
-        {b.auteur !== me && <a className="btn btn-sm" style={ghost} href={contactHref} target={b.contact ? '_blank' : undefined} rel="noopener">Contacter</a>}
+        <button className="btn btn-sm" style={ghost} onClick={openC}>💬 {me ? 'Commentaires' : 'Voir les commentaires'}</button>
+        {me && b.auteur !== me && <button className="btn btn-sm" onClick={interesse}>Ça m’intéresse</button>}
+        {me && b.auteur !== me && <a className="btn btn-sm" style={ghost} href={contactHref} target={b.contact ? '_blank' : undefined} rel="noopener">Contacter</a>}
+        {!me && <Link href="/inscription" className="btn btn-sm">Répondre — créer un compte</Link>}
       </div>
 
       {showC && (
@@ -105,11 +106,17 @@ export default function BesoinCard({ b, me }) {
               </div>
             </div>
           ))}
-          <form onSubmit={addComment} style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-            <input value={ctext} onChange={(e) => setCtext(e.target.value)} placeholder="Écrire un commentaire…"
-              style={{ flex: 1, padding: 11, border: '1px solid var(--line)', borderRadius: 10, fontFamily: 'inherit', fontSize: 16 }} />
-            <button className="btn btn-sm" type="submit">Envoyer</button>
-          </form>
+          {me ? (
+            <form onSubmit={addComment} style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+              <input value={ctext} onChange={(e) => setCtext(e.target.value)} placeholder="Écrire un commentaire…"
+                style={{ flex: 1, padding: 11, border: '1px solid var(--line)', borderRadius: 10, fontFamily: 'inherit', fontSize: 16 }} />
+              <button className="btn btn-sm" type="submit">Envoyer</button>
+            </form>
+          ) : (
+            <p className="muted sm" style={{ marginTop: 10 }}>
+              <Link href="/inscription"><strong>Créez un compte gratuit</strong></Link> pour commenter.
+            </p>
+          )}
         </div>
       )}
     </div>
