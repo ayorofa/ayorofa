@@ -13,17 +13,15 @@ export default function Header() {
           <span className="brand-mark" aria-hidden="true">▲</span> Ayôrôfa <b>Connect</b>
         </Link>
 
-        {/* Desktop */}
         <nav className="nav nav-d">
           <Link href="/annuaire">Annuaire</Link>
           <Link href="/besoins">Besoins</Link>
           <Link href="/recherche">Recherche</Link>
-          <Link href="/publier">Publier</Link>
+          <Link href="/abonnements">Formules</Link>
           <UserNav />
-          <Link href="/devis" className="btn btn-sm">Demander un devis</Link>
+          <Link href="/publier" className="btn btn-sm">Publier</Link>
         </nav>
 
-        {/* Mobile : bouton menu */}
         <button className="burger" aria-label="Ouvrir le menu" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span /><span /><span />
         </button>
@@ -33,6 +31,7 @@ export default function Header() {
       <div className={'sheet' + (open ? ' open' : '')} role="dialog" aria-label="Menu">
         <Link href="/annuaire" onClick={close}>Annuaire des pros</Link>
         <Link href="/recherche" onClick={close}>Recherche</Link>
+        <Link href="/abonnements" onClick={close}>Nos formules</Link>
         <Link href="/guides" onClick={close}>Guides</Link>
         <Link href="/devis" onClick={close}>Demander un devis</Link>
         <Link href="/espace" onClick={close}>Mon espace</Link>

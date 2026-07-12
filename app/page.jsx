@@ -11,9 +11,19 @@ export default function Home() {
     <>
       <section className="hero">
         <div className="wrap">
-          <h1>Trouvez un pro du BTP & de l’échafaudage en Côte d’Ivoire</h1>
-          <p>Décrivez votre besoin, comparez des professionnels vérifiés près de chez vous et recevez des devis — gratuitement.</p>
+          <p className="eyebrow" style={{ color: 'var(--gold-l)' }}>La plateforme de mise en relation</p>
+          <h1>Un besoin d’un côté. Un talent de l’autre.<br />Ayôrôfa Connect les réunit.</h1>
+          <p>
+            Entreprises, particuliers, chercheurs d’emploi : publiez, échangez et trouvez la bonne
+            personne — en direct, partout en Côte d’Ivoire.
+          </p>
           <SearchBar />
+          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
+            <Link href="/inscription" className="btn">Créer mon compte — gratuit</Link>
+            <Link href="/besoins" className="btn" style={{ background: 'transparent', border: '1.5px solid rgba(242,236,221,.35)', color: 'var(--ivoire)' }}>
+              Voir le fil en direct
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -21,7 +31,7 @@ export default function Home() {
         <div className="wrap">
           <p className="eyebrow">Nos métiers</p>
           <h2>Que recherchez-vous ?</h2>
-          <div className="grid g4" style={{ marginTop: 22 }}>
+          <div className="grid g4" style={{ marginTop: 18 }}>
             {METIERS.map((m) => (
               <Link key={m.slug} href={`/annuaire?metier=${m.slug}`} className="card metier-card">
                 <h3>{m.name}</h3>
@@ -40,7 +50,7 @@ export default function Home() {
         <div className="wrap">
           <p className="eyebrow">Pros vérifiés</p>
           <h2>Professionnels en vedette</h2>
-          <div className="grid g3" style={{ marginTop: 22 }}>
+          <div className="grid g3" style={{ marginTop: 18 }}>
             {vedettes.map((p) => <ProCard key={p.slug} pro={p} />)}
           </div>
         </div>
@@ -50,12 +60,15 @@ export default function Home() {
         <div className="wrap">
           <p className="eyebrow">Comment ça marche</p>
           <h2>Simple, rapide, gratuit</h2>
-          <div className="grid g3 steps" style={{ marginTop: 30 }}>
-            <div className="step"><h3>Décrivez</h3><p className="muted">Indiquez votre métier, votre ville et votre besoin.</p></div>
-            <div className="step"><h3>Comparez</h3><p className="muted">Recevez des devis de pros vérifiés près de chez vous.</p></div>
-            <div className="step"><h3>Choisissez</h3><p className="muted">Sélectionnez le bon pro et lancez votre chantier.</p></div>
+          <div className="grid g3 steps" style={{ marginTop: 26 }}>
+            <div className="step"><h3>Publiez</h3><p className="muted">Un besoin, une offre ou votre recherche — en 2 minutes.</p></div>
+            <div className="step"><h3>Recevez</h3><p className="muted">Des propositions et des contacts, en temps réel.</p></div>
+            <div className="step"><h3>Choisissez</h3><p className="muted">Discutez par messagerie et concluez en confiance.</p></div>
           </div>
-          <div style={{ marginTop: 32 }}><Link href="/devis" className="btn">Demander un devis gratuit</Link></div>
+          <div style={{ marginTop: 28, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+            <Link href="/inscription" className="btn">Rejoindre la communauté</Link>
+            <Link href="/abonnements" className="btn" style={{ background: 'transparent', border: '1.5px solid var(--line)', color: 'var(--text)' }}>Voir les formules</Link>
+          </div>
         </div>
       </section>
     </>
