@@ -3,6 +3,7 @@ import { Suspense, useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { ilya } from '@/lib/meta';
+import Avatar from '@/components/Avatar';
 
 function MessagesInner() {
   const router = useRouter();
@@ -10,7 +11,7 @@ function MessagesInner() {
   const [me, setMe] = useState(null);
   const [convs, setConvs] = useState([]);
   const [active, setActive] = useState(null);
-  const [names, setNames] = useState({});
+  const [profils, setProfils] = useState({});
   const [thread, setThread] = useState([]);
   const [text, setText] = useState('');
   const [loading, setLoading] = useState(true);
@@ -29,10 +30,13 @@ function MessagesInner() {
     }
     setConvs(Object.values(map).sort((a, b) => new Date(b.last.created_at) - new Date(a.last.created_at)));
     const ids = [...new Set(msgs.flatMap((m) => [m.expediteur, m.destinataire]).filter((x) => x !== uid))];
-    const to = sp.get('to'); if (to && !ids.includes(to)) ids.push(to);
+    const to = sp.get('to');
+    if (to && !ids.includes(to)) ids.push(to);
     if (ids.length) {
-      const { data: profs } = await supabase.from('profiles').select('id,nom').in('id', ids);
-      const nm = {}; (profs || []).forEach((p) => { nm[p.id] = p.nom || 'Utilisateur'; }); setNames(nm);
+      const { data: ps } = await supabase.from('profiles').select('id,nom,avatar_url').in('id', ids);
+      const nm = {};
+      (ps || []).forEach((p) => { nm[p.id] = { nom: p.nom || 'Utilisateur', avatar_url: p.avatar_url }; });
+      setProfils(nm);
     }
     setThread(msgs);
   }
@@ -45,7 +49,8 @@ function MessagesInner() {
       if (!user) { router.push('/connexion'); return; }
       setMe(user.id);
       await loadAll(user.id);
-      const to = sp.get('to'); if (to) setActive(to);
+      const to = sp.get('to');
+      if (to) setActive(to);
       setLoading(false);
       ch = supabase.channel('msgs')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `destinataire=eq.${user.id}` },
@@ -60,42 +65,57 @@ function MessagesInner() {
 
   useEffect(() => {
     if (!supabase || !me || !active) return;
-    supabase.from('messages').update({ lu: true }).eq('destinataire', me).eq('expediteur', active).eq('lu', false).then(() => {});
+    supabase.from('messages').update({ lu: true })
+      .eq('destinataire', me).eq('expediteur', active).eq('lu', false).then(() => {});
   }, [active, me, thread.length]);
 
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [activeMsgs.length]);
+  useEffect(() => { if (endRef.current) endRef.current.scrollIntoView({ behavior: 'smooth' }); }, [activeMsgs.length]);
 
   const send = async (e) => {
     e.preventDefault();
     if (!text.trim() || !active) return;
-    const contenu = text.trim(); setText('');
-    const { data } = await supabase.from('messages').insert({ expediteur: me, destinataire: active, contenu }).select().single();
+    const contenu = text.trim();
+    setText('');
+    const { data } = await supabase.from('messages')
+      .insert({ expediteur: me, destinataire: active, contenu }).select().single();
     if (data) setThread((t) => [...t, data]);
   };
+
+  const nomDe = (id) => (profils[id] && profils[id].nom) || 'Utilisateur';
+  const photoDe = (id) => profils[id] && profils[id].avatar_url;
 
   if (!supabase) return <main className="sec"><div className="wrap"><div className="card">Configuration Supabase manquante.</div></div></main>;
   if (loading) return <main className="sec"><div className="wrap"><p className="muted">Chargement…</p></div></main>;
 
   return (
     <main className="sec"><div className="wrap">
-      <p className="eyebrow">Messagerie 🔴</p><h1>Messages</h1>
+      <p className="eyebrow">Messagerie</p><h1>Messages</h1>
       <div className="chat">
         <aside className="chat-list">
           {convs.length ? convs.map((c) => (
             <button key={c.other} className={'conv' + (active === c.other ? ' on' : '')} onClick={() => setActive(c.other)}>
-              <span className="conv-n">{names[c.other] || 'Utilisateur'}</span>
-              <span className="conv-l">{c.last.contenu}</span>
+              <Avatar url={photoDe(c.other)} nom={nomDe(c.other)} size={42} />
+              <span className="conv-t">
+                <span className="conv-n">{nomDe(c.other)}</span>
+                <span className="conv-l">{c.last.contenu}</span>
+              </span>
               {c.unread > 0 && <span className="dot">{c.unread}</span>}
             </button>
-          )) : <p className="muted sm" style={{ padding: 12 }}>Aucune conversation. Contacte quelqu’un depuis le fil des besoins.</p>}
+          )) : <p className="muted sm" style={{ padding: 14 }}>Aucune conversation. Contactez quelqu’un depuis le fil.</p>}
         </aside>
+
         <section className="chat-thread">
           {active ? (
             <>
-              <div className="chat-head">{names[active] || 'Utilisateur'}</div>
+              <div className="chat-head">
+                <Avatar url={photoDe(active)} nom={nomDe(active)} size={36} href={`/profil/${active}`} />
+                <span>{nomDe(active)}</span>
+              </div>
               <div className="chat-msgs">
                 {activeMsgs.map((m) => (
-                  <div key={m.id} className={'bubble' + (m.expediteur === me ? ' me' : '')}>{m.contenu}<span className="bt">{ilya(m.created_at)}</span></div>
+                  <div key={m.id} className={'bubble' + (m.expediteur === me ? ' me' : '')}>
+                    {m.contenu}<span className="bt">{ilya(m.created_at)}</span>
+                  </div>
                 ))}
                 <div ref={endRef} />
               </div>
@@ -104,7 +124,7 @@ function MessagesInner() {
                 <button className="btn" type="submit">Envoyer</button>
               </form>
             </>
-          ) : <p className="muted" style={{ padding: 20 }}>Sélectionne une conversation à gauche.</p>}
+          ) : <p className="muted" style={{ padding: 20 }}>Sélectionnez une conversation.</p>}
         </section>
       </div>
     </div></main>

@@ -215,3 +215,27 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .hero-sub a{color:#cfc4ad;font-weight:600;border-bottom:1px solid rgba(207,196,173,.35);padding-bottom:1px}
 .hero-sub a:hover{color:var(--ivoire)}
 @media(min-width:860px){ .hero-cta .btn{flex:0 0 auto} }
+
+/* ---------- AVATARS ---------- */
+.avatar{border-radius:50%;object-fit:cover;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--ink);color:var(--gold);font-weight:800;border:2px solid var(--line);overflow:hidden}
+.avatar-i{background:linear-gradient(160deg,var(--ink),var(--ink2));color:var(--gold-l);border-color:rgba(201,162,75,.35)}
+.avatar-l{display:inline-flex;flex:0 0 auto}
+.avatar-l:hover .avatar{border-color:var(--gold)}
+.nav-me{display:inline-flex;align-items:center}
+.nav-me .avatar{border-color:rgba(201,162,75,.6);width:30px;height:30px}
+
+/* en-tête d'annonce (style fil d'actualité) */
+.post-head{display:flex;align-items:center;gap:11px}
+.post-n{display:flex;align-items:center;gap:4px;flex-wrap:wrap;line-height:1.2}
+.post-n strong{font-size:.98rem}
+
+/* commentaires avec photo */
+.cmt{display:flex;gap:10px;margin-bottom:12px}
+.cmt-b{background:#f7f3ea;border-radius:14px;padding:9px 13px;flex:1;min-width:0}
+.cmt-b > div{margin-top:2px}
+
+/* conversations : photo */
+.conv{display:flex;align-items:center;gap:11px}
+.conv-t{min-width:0;flex:1}
+.chat-head{display:flex;align-items:center;gap:10px}
