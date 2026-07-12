@@ -37,7 +37,11 @@ export default function Abonnements() {
               </ul>
 
               <Link
-                href={p.id === 'pro' && PUBLICATION_GRATUITE ? '/publier' : p.href}
+                href={
+                  p.id === 'decouverte' ? '/inscription'
+                  : (p.id === 'pro' && PUBLICATION_GRATUITE) ? '/publier'
+                  : `/abonnements/${p.id}`
+                }
                 className={'btn' + (p.id === 'decouverte' ? ' ghost' : '')}
               >
                 {p.id === 'pro' && PUBLICATION_GRATUITE ? 'Publier gratuitement' : p.cta}

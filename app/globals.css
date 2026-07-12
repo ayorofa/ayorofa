@@ -258,3 +258,9 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .joinbox h3{color:var(--ivoire);margin:0 0 6px}
 .joinbox p{color:#cfc4ad;font-size:.94rem;margin:0 0 14px}
 @media(min-width:860px){ .hero-slim h1{font-size:2rem} }
+
+/* ---------- PAIEMENT MOBILE MONEY ---------- */
+.paybox{margin-top:10px;background:linear-gradient(165deg,var(--ink),var(--ink2));color:var(--ivoire);
+  border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:4px;align-items:center;text-align:center}
+.paybox-n{font-size:1.4rem;font-weight:800;color:var(--gold-l);letter-spacing:.5px}
+.paybox .muted{color:#cfc4ad}
