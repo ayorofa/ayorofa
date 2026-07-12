@@ -10,11 +10,14 @@ const TYPES = [
   { v: 'offre_emploi', label: "Offre d'emploi" },
   { v: 'recherche', label: "Recherche d'emploi" },
 ];
+const WA = '2250749074082';
+const waLink = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(
+  'Bonjour Ayôrôfa Connect 👋\nJe veux publier une annonce :\n- Type (demande / offre / emploi) :\n- Métier :\n- Ville :\n- Détails :\n- Mon contact :');
 
 export default function Publier() {
   const router = useRouter();
   const [ready, setReady] = useState(false);
-  const [f, setF] = useState({ type: 'demande', titre: '', description: '', metier: '', ville: '' });
+  const [f, setF] = useState({ type: 'demande', titre: '', description: '', metier: '', ville: '', lien: '' });
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -24,8 +27,8 @@ export default function Publier() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { router.push('/connexion'); return; }
       const { data } = await supabase.from('profiles').select('type').eq('id', user.id).single();
-      if (data?.type === 'entreprise') setF((v) => ({ ...v, type: 'offre_emploi' }));
-      else if (data?.type === 'chercheur') setF((v) => ({ ...v, type: 'recherche' }));
+      if (data && data.type === 'entreprise') setF((v) => ({ ...v, type: 'offre_emploi' }));
+      else if (data && data.type === 'chercheur') setF((v) => ({ ...v, type: 'recherche' }));
       setReady(true);
     })();
   }, [router]);
@@ -38,7 +41,8 @@ export default function Publier() {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push('/connexion'); return; }
     const { error } = await supabase.from('besoins').insert({
-      auteur: user.id, type: f.type, titre: f.titre, description: f.description, metier: f.metier, ville: f.ville,
+      auteur: user.id, type: f.type, titre: f.titre, description: f.description,
+      metier: f.metier, ville: f.ville, lien: f.lien || null,
     });
     setLoading(false);
     if (error) { setMsg(error.message); return; }
@@ -49,26 +53,21 @@ export default function Publier() {
   return (
     <main className="sec"><div className="wrap" style={{ maxWidth: 620 }}>
       <p className="eyebrow">Publier</p><h1>Publier un besoin ou une offre</h1>
+      <a className="btn" href={waLink} target="_blank" rel="noopener" style={{ background: '#25D366', color: '#fff', marginBottom: 14 }}>Publier en 1 message sur WhatsApp</a>
+      <p className="muted sm" style={{ marginBottom: 18 }}>…ou remplissez le formulaire ci-dessous.</p>
       <form className="card form" onSubmit={submit}>
         <label className="full">Type d’annonce
-          <select name="type" value={f.type} onChange={on}>
-            {TYPES.map((t) => <option key={t.v} value={t.v}>{t.label}</option>)}
-          </select>
+          <select name="type" value={f.type} onChange={on}>{TYPES.map((t) => <option key={t.v} value={t.v}>{t.label}</option>)}</select>
         </label>
         <label className="full">Titre<input name="titre" value={f.titre} onChange={on} required placeholder="Ex. Recherche maçon pour dalle 40m²" /></label>
         <label>Métier / domaine
-          <select name="metier" value={f.metier} onChange={on} required>
-            <option value="">Choisir…</option>
-            {METIERS.map((m) => <option key={m.slug} value={m.slug}>{m.name}</option>)}
-          </select>
+          <select name="metier" value={f.metier} onChange={on} required><option value="">Choisir…</option>{METIERS.map((m) => <option key={m.slug} value={m.slug}>{m.name}</option>)}</select>
         </label>
         <label>Ville
-          <select name="ville" value={f.ville} onChange={on}>
-            <option value="">Choisir…</option>
-            {VILLES.map((v) => <option key={v} value={v}>{v}</option>)}
-          </select>
+          <select name="ville" value={f.ville} onChange={on}><option value="">Choisir…</option>{VILLES.map((v) => <option key={v} value={v}>{v}</option>)}</select>
         </label>
         <label className="full">Description<textarea name="description" value={f.description} onChange={on} rows={4} placeholder="Détaillez votre besoin, budget, délais…" /></label>
+        <label className="full">Lien d’origine (optionnel)<input name="lien" value={f.lien} onChange={on} placeholder="https://… (si l’annonce vient d’ailleurs)" /></label>
         {msg && <div className="full" style={{ color: '#b3261e' }}>{msg}</div>}
         <button className="btn full" type="submit" disabled={loading}>{loading ? '…' : 'Publier'}</button>
       </form>

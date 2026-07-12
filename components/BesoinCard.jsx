@@ -24,7 +24,7 @@ export default function BesoinCard({ b, me }) {
       setLikes(count || 0);
       if (me) { const { data } = await supabase.from('reactions').select('id').eq('besoin', b.id).eq('auteur', me).maybeSingle(); setLiked(!!data); }
       const { data: pa } = await supabase.from('profiles').select('nom').eq('id', b.auteur).maybeSingle();
-      setAuthor(pa?.nom || 'Utilisateur');
+      setAuthor((pa && pa.nom) || 'Utilisateur');
     })();
   }, [b.id, me]);
 
@@ -49,6 +49,9 @@ export default function BesoinCard({ b, me }) {
     if (!me) { window.location.href = '/connexion'; return; }
     await supabase.from('notifications').insert({ destinataire: b.auteur, besoin: b.id }); alert('Votre intérêt a été envoyé ✓');
   };
+  const contactHref = b.contact
+    ? 'https://wa.me/' + String(b.contact).replace(/\D/g, '')
+    : '/messages?to=' + b.auteur;
 
   return (
     <div className="card">
@@ -57,13 +60,18 @@ export default function BesoinCard({ b, me }) {
         <span className="muted sm">{ilya(b.created_at)}</span>
       </div>
       <h3 style={{ margin: '8px 0 4px' }}>{b.titre}</h3>
-      <p className="muted sm"><Link href={`/profil/${b.auteur}`}>{author}</Link> · {m ? m.name : b.metier}{b.ville ? ` · ${b.ville}` : ''}</p>
+      <p className="muted sm">
+        {b.contact ? author : <Link href={`/profil/${b.auteur}`}>{author}</Link>}
+        {' · '}{m ? m.name : b.metier}{b.ville ? ` · ${b.ville}` : ''}
+      </p>
+      {b.source && <p className="muted sm" style={{ marginTop: 2 }}>Repéré par Ayôrôfa · {b.source}</p>}
       {b.description && <p style={{ marginTop: 8 }}>{b.description}</p>}
+      {b.lien && <p style={{ marginTop: 6 }}><a href={b.lien} target="_blank" rel="noopener">Voir l’annonce d’origine ↗</a></p>}
       <div style={{ display: 'flex', gap: 8, marginTop: 10, flexWrap: 'wrap' }}>
         <button className="btn btn-sm" style={liked ? {} : ghost} onClick={toggleLike}>👍 {likes}</button>
         <button className="btn btn-sm" style={ghost} onClick={openC}>💬 Commentaires</button>
         {b.auteur !== me && <button className="btn btn-sm" onClick={interesse}>Ça m’intéresse</button>}
-        {b.auteur !== me && <a className="btn btn-sm" style={ghost} href={`/messages?to=${b.auteur}`}>Contacter</a>}
+        {b.auteur !== me && <a className="btn btn-sm" style={ghost} href={contactHref} target={b.contact ? '_blank' : undefined} rel="noopener">Contacter</a>}
       </div>
       {showC && (
         <div style={{ marginTop: 12, borderTop: '1px solid var(--line)', paddingTop: 12 }}>
