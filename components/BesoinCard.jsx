@@ -6,6 +6,7 @@ import { metierBySlug } from '@/data/metiers';
 import { BTYPE, ilya } from '@/lib/meta';
 import Avatar from '@/components/Avatar';
 import BadgeVerifie from '@/components/BadgeVerifie';
+import Signaler from '@/components/Signaler';
 
 const ghost = { background: 'transparent', border: '1px solid var(--line)', color: 'var(--text)' };
 
@@ -92,6 +93,11 @@ export default function BesoinCard({ b, me }) {
         {me && b.auteur !== me && <button className="btn btn-sm" onClick={interesse}>Ça m’intéresse</button>}
         {me && b.auteur !== me && <a className="btn btn-sm" style={ghost} href={contactHref} target={b.contact ? '_blank' : undefined} rel="noopener">Contacter</a>}
         {!me && <Link href="/inscription" className="btn btn-sm">Répondre — créer un compte</Link>}
+        {me && b.auteur !== me && (
+          <span style={{ marginLeft: 'auto' }}>
+            <Signaler type="besoin" cibleId={b.id} auteurCible={b.auteur} me={me} />
+          </span>
+        )}
       </div>
 
       {showC && (

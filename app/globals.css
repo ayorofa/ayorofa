@@ -259,8 +259,16 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .joinbox p{color:#cfc4ad;font-size:.94rem;margin:0 0 14px}
 @media(min-width:860px){ .hero-slim h1{font-size:2rem} }
 
-/* ---------- PAIEMENT MOBILE MONEY ---------- */
-.paybox{margin-top:10px;background:linear-gradient(165deg,var(--ink),var(--ink2));color:var(--ivoire);
-  border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:4px;align-items:center;text-align:center}
-.paybox-n{font-size:1.4rem;font-weight:800;color:var(--gold-l);letter-spacing:.5px}
-.paybox .muted{color:#cfc4ad}
+/* ---------- MODÉRATION ---------- */
+.lien-signaler{background:none;border:none;color:var(--muted);font-size:.82rem;font-weight:600;
+  cursor:pointer;padding:8px 6px;min-height:40px}
+.lien-signaler:hover{color:#b3261e}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;display:flex;align-items:center;
+  justify-content:center;padding:18px}
+.modal{background:#fff;border-radius:18px;padding:22px;width:100%;max-width:420px;
+  box-shadow:0 20px 50px rgba(0,0,0,.28);max-height:88vh;overflow-y:auto}
+.modal h3{margin:0 0 4px}
+.radio{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);
+  border-radius:11px;cursor:pointer;font-size:.94rem;min-height:46px}
+.radio:has(input:checked){border-color:var(--gold);background:#fffdf6}
+.radio input{width:18px;height:18px;accent-color:var(--gold)}
