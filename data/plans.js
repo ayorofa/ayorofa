@@ -23,7 +23,7 @@ export const PLANS = [
   {
     id: 'pro',
     nom: 'Pro',
-    prix: 3000,
+    prix: 2000,
     periode: 'par mois',
     desc: 'Pour publier vos besoins, vos offres et vos annonces.',
     cta: 'Choisir Pro',
@@ -40,7 +40,7 @@ export const PLANS = [
   {
     id: 'verifie',
     nom: 'Vérifié',
-    prix: 10000,
+    prix: 5000,
     periode: 'par mois',
     desc: 'Pour inspirer confiance et être choisi en priorité.',
     cta: 'Devenir vérifié',

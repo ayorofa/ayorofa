@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { metierBySlug } from '@/data/metiers';
+import BadgeVerifie from '@/components/BadgeVerifie';
+
 export default function ProCard({ pro }) {
   const m = metierBySlug(pro.metier);
   return (
@@ -7,12 +9,15 @@ export default function ProCard({ pro }) {
       <div className="pro-top">
         <div className="pro-avatar">{pro.nom.charAt(0)}</div>
         <div>
-          <h3>{pro.nom} {pro.verifie && <span className="badge">✓ Vérifié</span>}</h3>
+          <h3>{pro.nom} {pro.verifie && <BadgeVerifie size="sm" />}</h3>
           <p className="muted sm">{m ? m.name : pro.metier} · {pro.ville}</p>
         </div>
       </div>
       <p className="pro-desc">{pro.desc}</p>
-      <div className="pro-foot"><span className="stars">★ {pro.note.toFixed(1)}</span><span className="muted sm">{pro.avis} avis</span></div>
+      <div className="pro-foot">
+        <span className="stars">★ {pro.note.toFixed(1)}</span>
+        <span className="muted sm">{pro.avis} avis</span>
+      </div>
     </Link>
   );
 }

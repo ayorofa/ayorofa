@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Ayôrôfa Connect">
+  <!-- Temple Ayôrôfa (fronton + colonnes) -->
+  <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 18 24 8l16 10" stroke-width="2.6"/>
+    <path d="M9.5 21h29" stroke-width="2.2"/>
+    <path d="M13 24v9M19 24v9M29 24v9M35 24v9" stroke-width="2.4"/>
+    <path d="M8.5 36h31" stroke-width="2.2"/>
+    <path d="M6.5 40h35" stroke-width="2.6"/>
+  </g>
+  <!-- Le lien : deux points reliés, au coeur du temple -->
+  <g stroke="currentColor" stroke-linecap="round">
+    <path d="M20.5 29.5h7" stroke-width="2.6"/>
+  </g>
+  <circle cx="19" cy="29.5" r="3.1" fill="currentColor"/>
+  <circle cx="29" cy="29.5" r="3.1" fill="currentColor"/>
+</svg>

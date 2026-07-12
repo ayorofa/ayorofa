@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { PLANS, PUBLICATION_GRATUITE } from '@/data/plans';
+import BadgeVerifie from '@/components/BadgeVerifie';
 
 const fmt = (n) => n.toLocaleString('fr-FR').replace(/\u202f|\u00a0/g, ' ');
 
@@ -19,7 +20,7 @@ export default function Abonnements() {
           {PLANS.map((p) => (
             <div key={p.id} className={'plan' + (p.vedette ? ' mid' : '') + (p.top ? ' top' : '')}>
               {p.vedette && <span className="plan-tag">Le plus choisi</span>}
-              <h3>{p.nom}</h3>
+              <h3>{p.nom}{p.top && <BadgeVerifie size="sm" label={false} />}</h3>
               <p className="plan-d">{p.desc}</p>
               <div className="plan-p">
                 {p.prix === 0 ? 'Gratuit' : `${fmt(p.prix)} F`}

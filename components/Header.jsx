@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import Logo from '@/components/Logo';
 import UserNav from '@/components/UserNav';
 
 export default function Header() {
@@ -10,7 +11,8 @@ export default function Header() {
     <header className="hdr">
       <div className="wrap hdr-in">
         <Link href="/" className="brand" onClick={close}>
-          <span className="brand-mark" aria-hidden="true">▲</span> Ayôrôfa <b>Connect</b>
+          <span className="brand-logo"><Logo size={28} /></span>
+          Ayôrôfa <b>Connect</b>
         </Link>
 
         <nav className="nav nav-d">
