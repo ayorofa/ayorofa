@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 
 export default function Connexion() {
@@ -27,7 +28,10 @@ export default function Connexion() {
         {msg && <div style={{ color: '#b3261e' }}>{msg}</div>}
         <button className="btn" type="submit" disabled={loading}>{loading ? '…' : 'Connexion'}</button>
       </form>
-      <p className="muted sm" style={{ marginTop: 14 }}>Pas de compte ? <a href="/inscription">S’inscrire</a></p>
+      <p className="muted sm" style={{ marginTop: 14 }}>
+        <Link href="/mot-de-passe-oublie">Mot de passe oublié ?</Link>
+      </p>
+      <p className="muted sm" style={{ marginTop: 6 }}>Pas de compte ? <Link href="/inscription">S’inscrire</Link></p>
     </div></main>
   );
 }
