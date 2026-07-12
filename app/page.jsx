@@ -18,12 +18,13 @@ export default function Home() {
             personne — en direct, partout en Côte d’Ivoire.
           </p>
           <SearchBar />
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginTop: 16 }}>
+          <div className="hero-cta">
             <Link href="/inscription" className="btn">Créer mon compte — gratuit</Link>
-            <Link href="/besoins" className="btn" style={{ background: 'transparent', border: '1.5px solid rgba(242,236,221,.35)', color: 'var(--ivoire)' }}>
-              Voir le fil en direct
-            </Link>
+            <Link href="/abonnements" className="btn btn-onink">Voir les formules</Link>
           </div>
+          <p className="hero-sub">
+            <Link href="/besoins">Voir le fil en direct →</Link>
+          </p>
         </div>
       </section>
 
@@ -65,9 +66,8 @@ export default function Home() {
             <div className="step"><h3>Recevez</h3><p className="muted">Des propositions et des contacts, en temps réel.</p></div>
             <div className="step"><h3>Choisissez</h3><p className="muted">Discutez par messagerie et concluez en confiance.</p></div>
           </div>
-          <div style={{ marginTop: 28, display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+          <div style={{ marginTop: 28 }}>
             <Link href="/inscription" className="btn">Rejoindre la communauté</Link>
-            <Link href="/abonnements" className="btn" style={{ background: 'transparent', border: '1.5px solid var(--line)', color: 'var(--text)' }}>Voir les formules</Link>
           </div>
         </div>
       </section>

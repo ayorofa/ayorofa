@@ -205,3 +205,13 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .vbadge svg{flex:0 0 auto}
 .vbadge-sm{font-size:.66rem;padding:2px 7px 2px 5px}
 .plan.top .vbadge{background:rgba(201,162,75,.16);border-color:var(--gold-l);color:var(--gold-l)}
+
+/* ---------- BOUTONS DU HERO ---------- */
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.hero-cta .btn{flex:1 1 auto;min-width:170px}
+.btn-onink{background:transparent;border:1.5px solid rgba(201,162,75,.55);color:var(--gold-l)}
+.btn-onink:hover{background:rgba(201,162,75,.12)}
+.hero-sub{margin:14px 0 0;font-size:.92rem}
+.hero-sub a{color:#cfc4ad;font-weight:600;border-bottom:1px solid rgba(207,196,173,.35);padding-bottom:1px}
+.hero-sub a:hover{color:var(--ivoire)}
+@media(min-width:860px){ .hero-cta .btn{flex:0 0 auto} }
