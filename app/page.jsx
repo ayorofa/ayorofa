@@ -18,6 +18,8 @@ export default function Accueil() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState(null);
+  const [suivis, setSuivis] = useState([]);       // les gens que je suis
+  const [onglet, setOnglet] = useState('tout');   // tout | abonnements
   const [type, setType] = useState('');
   const [metier, setMetier] = useState('');
   const [ville, setVille] = useState('');
@@ -26,17 +28,21 @@ export default function Accueil() {
     if (!supabase) { setLoading(false); return; }
     let channel;
     (async () => {
-      // Qui regarde ? (visiteur = null, c'est permis)
       const { data: { user } } = await supabase.auth.getUser();
-      setUid(user ? user.id : null);
+      const me = user ? user.id : null;
+      setUid(me);
 
-      // Le fil, du plus récent au plus ancien — visible par TOUS
+      // Qui je suis (abonnements)
+      if (me) {
+        const { data: ab } = await supabase.from('abonnes').select('suivi').eq('suiveur', me);
+        setSuivis((ab || []).map((a) => a.suivi));
+      }
+
       const { data } = await supabase.from('besoins').select('*')
-        .order('created_at', { ascending: false }).limit(50);
+        .order('created_at', { ascending: false }).limit(60);
       setItems(data || []);
       setLoading(false);
 
-      // Nouvelles annonces en direct, insérées en haut
       channel = supabase.channel('accueil-feed')
         .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'besoins' },
           (payload) => setItems((cur) => [payload.new, ...cur]))
@@ -45,14 +51,14 @@ export default function Accueil() {
     return () => { if (channel) supabase.removeChannel(channel); };
   }, []);
 
-  const vus = items.filter((b) =>
-    (!type || b.type === type) &&
-    (!metier || b.metier === metier) &&
-    (!ville || b.ville === ville));
+  const vus = items
+    .filter((b) => onglet === 'tout' || suivis.includes(b.auteur))
+    .filter((b) => !type || b.type === type)
+    .filter((b) => !metier || b.metier === metier)
+    .filter((b) => !ville || b.ville === ville);
 
   return (
     <>
-      {/* Bandeau d'accueil : court, il ne doit pas repousser le fil */}
       {!uid && (
         <section className="hero hero-slim">
           <div className="wrap">
@@ -77,8 +83,28 @@ export default function Accueil() {
             <Link href={uid ? '/publier' : '/inscription'} className="btn btn-sm">Publier</Link>
           </div>
 
-          {/* Filtres rapides */}
-          <div className="chips" role="tablist" aria-label="Filtrer le fil">
+          {/* Onglets : Tout / Mes abonnements */}
+          {uid && (
+            <div className="onglets" role="tablist">
+              <button
+                className={'onglet' + (onglet === 'tout' ? ' on' : '')}
+                onClick={() => setOnglet('tout')}
+                role="tab" aria-selected={onglet === 'tout'}
+              >
+                Tout
+              </button>
+              <button
+                className={'onglet' + (onglet === 'abonnements' ? ' on' : '')}
+                onClick={() => setOnglet('abonnements')}
+                role="tab" aria-selected={onglet === 'abonnements'}
+              >
+                Mes abonnements
+                {suivis.length > 0 && <span className="onglet-n">{suivis.length}</span>}
+              </button>
+            </div>
+          )}
+
+          <div className="chips" style={{ marginTop: uid ? 14 : 0 }}>
             {FILTRES.map((f) => (
               <button key={f.v} className={'chip' + (type === f.v ? ' on' : '')} onClick={() => setType(f.v)}>
                 {f.label}
@@ -96,28 +122,39 @@ export default function Accueil() {
             </select>
           </div>
 
-          <div style={{ margin: '16px 0' }}><SponsorBanner slot="home" /></div>
+          {onglet === 'tout' && <div style={{ margin: '16px 0' }}><SponsorBanner slot="home" /></div>}
 
           {loading ? (
-            <p className="muted">Chargement du fil…</p>
+            <p className="muted" style={{ marginTop: 18 }}>Chargement du fil…</p>
           ) : vus.length ? (
-            <div style={{ display: 'grid', gap: 14 }}>
+            <div style={{ display: 'grid', gap: 14, marginTop: 16 }}>
               {vus.map((b, i) => (
                 <div key={b.id}>
                   <BesoinCard b={b} me={uid} />
-                  {/* Invitation à rejoindre, glissée dans le fil */}
                   {!uid && i === 2 && (
                     <div className="joinbox">
                       <h3>Rejoignez la communauté</h3>
-                      <p>Créez un compte gratuit pour publier une annonce, réagir et contacter les membres.</p>
+                      <p>Créez un compte gratuit pour publier, réagir et contacter les membres.</p>
                       <Link href="/inscription" className="btn">Créer mon compte — gratuit</Link>
                     </div>
                   )}
                 </div>
               ))}
             </div>
+          ) : onglet === 'abonnements' ? (
+            /* Fil abonnements vide : on guide vers les membres */
+            <div className="card vide" style={{ marginTop: 16 }}>
+              <div className="vide-ic" aria-hidden="true">👥</div>
+              <h3>{suivis.length === 0 ? 'Vous ne suivez personne' : 'Rien de neuf'}</h3>
+              <p className="muted">
+                {suivis.length === 0
+                  ? 'Abonnez-vous à des membres pour voir leurs annonces ici, en priorité.'
+                  : 'Les membres que vous suivez n’ont rien publié pour l’instant.'}
+              </p>
+              <Link href="/membres" className="btn">Découvrir des membres</Link>
+            </div>
           ) : (
-            <div className="card">
+            <div className="card" style={{ marginTop: 16 }}>
               <h3>Le fil est encore calme</h3>
               <p className="muted">Soyez le premier à publier un besoin ou une offre.</p>
               <Link href={uid ? '/publier' : '/inscription'} className="btn btn-sm">Publier une annonce</Link>

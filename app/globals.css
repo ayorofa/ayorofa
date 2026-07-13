@@ -311,3 +311,29 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .liste{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}
 .liste li{position:relative;padding-left:24px;color:#333}
 .liste li:before{content:"✓";position:absolute;left:0;color:var(--gold-d);font-weight:800}
+
+/* ---------- ONGLETS DU FIL (Tout / Mes abonnements) ---------- */
+.onglets{display:flex;gap:0;border-bottom:2px solid var(--line);margin-top:6px}
+.onglet{flex:1;background:none;border:none;border-bottom:3px solid transparent;margin-bottom:-2px;
+  padding:14px 8px;font-size:.95rem;font-weight:700;color:var(--muted);cursor:pointer;
+  min-height:50px;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.onglet:hover{color:var(--text)}
+.onglet.on{color:var(--ink);border-bottom-color:var(--gold)}
+.onglet-n{background:var(--gold);color:var(--ink);font-size:.7rem;font-weight:800;
+  min-width:20px;height:20px;border-radius:10px;display:inline-flex;align-items:center;
+  justify-content:center;padding:0 6px}
+.onglet:not(.on) .onglet-n{background:var(--line);color:var(--muted)}
+
+/* état vide du fil abonnements */
+.vide{text-align:center;padding:34px 22px}
+.vide-ic{font-size:2.6rem;margin-bottom:10px}
+.vide h3{margin:0 0 6px}
+.vide p{margin:0 auto 16px;max-width:34ch}
+
+/* ---------- PAIEMENT MOBILE MONEY ---------- */
+.paybox{margin-top:10px;background:linear-gradient(165deg,var(--ink),var(--ink2));color:var(--ivoire);
+  border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:4px;align-items:center;text-align:center}
+.paybox-n{font-size:1.4rem;font-weight:800;color:var(--gold-l);letter-spacing:.5px}
+.paybox .muted{color:#cfc4ad}
+.pay-a{position:relative;padding-left:26px;font-size:.94rem;margin-bottom:8px;list-style:none;color:var(--text)}
+.pay-a:before{content:"✓";position:absolute;left:0;color:var(--gold-d);font-weight:800}
