@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import Avatar from '@/components/Avatar';
 import BadgeVerifie from '@/components/BadgeVerifie';
 import Presence from '@/components/Presence';
-import BoutonSuivre from '@/components/BoutonSuivre';
+import BoutonReseau from '@/components/BoutonReseau';
 import { METIERS, metierBySlug } from '@/data/metiers';
 import { VILLES } from '@/data/villes';
 
@@ -126,7 +126,7 @@ export default function Membres() {
                 )}
               </div>
               <div className="membre-a">
-                <BoutonSuivre cibleId={m.id} me={me} petit />
+                <BoutonReseau cibleId={m.id} me={me} petit />
                 {me && (
                   <a className="btn btn-sm btn-ghost" href={`/messages?to=${m.id}`}>Message</a>
                 )}

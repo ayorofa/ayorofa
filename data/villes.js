@@ -1,4 +1,6 @@
+// Communes d'Abidjan et environs
 export const VILLES = [
-  'Cocody', 'Plateau', 'Yopougon', 'Marcory', 'Treichville',
-  'Abobo', 'Koumassi', 'Port-Bouët', 'Adjamé', 'Bingerville',
+  'Abobo', 'Adjamé', 'Anyama', 'Attécoubé', 'Bingerville', 'Cocody',
+  'Koumassi', 'Marcory', 'Plateau', 'Port-Bouët', 'Songon', 'Treichville',
+  'Yopougon', 'Grand-Bassam', 'Autre ville',
 ];

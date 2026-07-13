@@ -1,13 +1,18 @@
 'use client';
 import Script from 'next/script';
+
+// Google Analytics — actif seulement si NEXT_PUBLIC_GA_ID est défini dans Vercel.
 export default function Analytics() {
-  const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
-  if (!GA_ID) return null;
+  const id = process.env.NEXT_PUBLIC_GA_ID;
+  if (!id) return null;
   return (
     <>
-      <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
-      <Script id="ga4-init" strategy="afterInteractive">
-        {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${GA_ID}',{anonymize_ip:true});`}
+      <Script src={`https://www.googletagmanager.com/gtag/js?id=${id}`} strategy="afterInteractive" />
+      <Script id="ga-init" strategy="afterInteractive">
+        {`window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${id}');`}
       </Script>
     </>
   );

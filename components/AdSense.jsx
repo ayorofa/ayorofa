@@ -1,13 +1,22 @@
 'use client';
-import { useEffect } from 'react';
 import Script from 'next/script';
-const CLIENT = process.env.NEXT_PUBLIC_ADSENSE_CLIENT;
+
+// Google AdSense — actif seulement si NEXT_PUBLIC_ADSENSE_ID est défini.
 export function AdSenseScript() {
-  if (!CLIENT) return null;
-  return <Script async src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${CLIENT}`} strategy="afterInteractive" crossOrigin="anonymous" />;
+  const id = process.env.NEXT_PUBLIC_ADSENSE_ID;
+  if (!id) return null;
+  return (
+    <Script
+      async
+      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${id}`}
+      crossOrigin="anonymous"
+      strategy="afterInteractive"
+    />
+  );
 }
-export function AdSlot({ slot, format = 'auto', responsive = true, style }) {
-  useEffect(() => { try { (window.adsbygoogle = window.adsbygoogle || []).push({}); } catch (e) {} }, []);
-  if (!CLIENT) return <div className="ad-placeholder">Emplacement publicitaire</div>;
-  return <ins className="adsbygoogle" style={{ display: 'block', ...style }} data-ad-client={CLIENT} data-ad-slot={slot} data-ad-format={format} data-full-width-responsive={responsive ? 'true' : 'false'} />;
+
+export default function AdSlot() {
+  const id = process.env.NEXT_PUBLIC_ADSENSE_ID;
+  if (!id) return <div className="ad-placeholder">Espace publicitaire</div>;
+  return <ins className="adsbygoogle" style={{ display: 'block' }} data-ad-client={id} data-ad-format="auto" />;
 }

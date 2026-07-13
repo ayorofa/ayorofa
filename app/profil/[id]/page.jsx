@@ -7,7 +7,7 @@ import { ilya } from '@/lib/meta';
 import Avatar from '@/components/Avatar';
 import BadgeVerifie from '@/components/BadgeVerifie';
 import Presence from '@/components/Presence';
-import BoutonSuivre from '@/components/BoutonSuivre';
+import BoutonReseau from '@/components/BoutonReseau';
 
 const TYPE_LABEL = { entreprise: 'Entreprise', particulier: 'Particulier', chercheur: "Chercheur d'emploi" };
 
@@ -106,7 +106,7 @@ export default function Profil({ params }) {
         )}
 
         <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
-          <BoutonSuivre cibleId={id} me={me} onChange={(d) => setStats((s) => ({ ...s, abonnes: s.abonnes + d }))} />
+          <BoutonReseau cibleId={id} me={me} />
           {me && me !== id && <a className="btn btn-ghost" href={`/messages?to=${id}`}>Envoyer un message</a>}
           {me === id && <Link className="btn btn-ghost" href="/profil/modifier">Modifier mon profil</Link>}
         </div>

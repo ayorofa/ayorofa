@@ -337,3 +337,12 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .paybox .muted{color:#cfc4ad}
 .pay-a{position:relative;padding-left:26px;font-size:.94rem;margin-bottom:8px;list-style:none;color:var(--text)}
 .pay-a:before{content:"✓";position:absolute;left:0;color:var(--gold-d);font-weight:800}
+
+/* ---------- RÉSEAU & NOTIFICATIONS ---------- */
+.notif{display:flex;gap:12px;align-items:flex-start}
+.notif-new{border-color:var(--gold);background:#fffdf6}
+.hdr-actions{display:flex;align-items:center;gap:4px}
+.hdr-msg{position:relative;display:inline-flex;align-items:center;justify-content:center;
+  width:44px;height:44px;color:#e9ecf1;border-radius:12px}
+.hdr-msg:active{background:rgba(255,255,255,.08)}
+.hdr-msg .bnav-b{top:6px;right:5px}

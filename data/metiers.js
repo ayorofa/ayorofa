@@ -1,11 +1,15 @@
+// Métiers / centres d'intérêt de la plateforme
 export const METIERS = [
-  { slug: 'echafaudage', name: 'Échafaudage', desc: 'Montage, location et démontage sécurisés.' },
-  { slug: 'maconnerie', name: 'Maçonnerie', desc: 'Construction, murs, dalles, fondations.' },
-  { slug: 'peinture', name: 'Peinture & façade', desc: 'Intérieur, extérieur, ravalement.' },
-  { slug: 'electricite', name: 'Électricité', desc: 'Installation et mise aux normes.' },
-  { slug: 'plomberie', name: 'Plomberie', desc: 'Sanitaire, réseaux, dépannage.' },
-  { slug: 'carrelage', name: 'Carrelage', desc: 'Sols, murs, faïence.' },
-  { slug: 'charpente', name: 'Charpente & toiture', desc: 'Bois, métal, couverture.' },
-  { slug: 'etancheite', name: 'Étanchéité', desc: 'Terrasses, toitures, sous-sols.' },
+  { slug: 'echafaudage',  name: 'Échafaudage',          desc: 'Location, montage et démontage' },
+  { slug: 'maconnerie',   name: 'Maçonnerie',           desc: 'Gros œuvre, dalles, murs' },
+  { slug: 'electricite',  name: 'Électricité',          desc: 'Installation et dépannage' },
+  { slug: 'plomberie',    name: 'Plomberie',            desc: 'Sanitaire et canalisations' },
+  { slug: 'peinture',     name: 'Peinture',             desc: 'Intérieur, façades, décoration' },
+  { slug: 'carrelage',    name: 'Carrelage',            desc: 'Pose sols et murs' },
+  { slug: 'menuiserie',   name: 'Menuiserie',           desc: 'Bois et aluminium' },
+  { slug: 'climatisation',name: 'Climatisation & froid',desc: 'Installation et entretien' },
+  { slug: 'soudure',      name: 'Soudure & métal',      desc: 'Structures et ferronnerie' },
+  { slug: 'btp_divers',   name: 'BTP & services divers',desc: 'Autres corps de métier' },
 ];
-export const metierBySlug = (s) => METIERS.find((m) => m.slug === s);
+
+export const metierBySlug = (slug) => METIERS.find((m) => m.slug === slug) || null;

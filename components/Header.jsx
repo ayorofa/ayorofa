@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Logo from '@/components/Logo';
 import UserNav from '@/components/UserNav';
+import IconMessages from '@/components/IconMessages';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -24,9 +25,12 @@ export default function Header() {
           <Link href="/publier" className="btn btn-sm">Publier</Link>
         </nav>
 
-        <button className="burger" aria-label="Ouvrir le menu" aria-expanded={open} onClick={() => setOpen(!open)}>
+        <div className="hdr-actions">
+          <IconMessages />
+          <button className="burger" aria-label="Ouvrir le menu" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span /><span /><span />
-        </button>
+          </button>
+        </div>
       </div>
 
       {open && <div className="sheet-bg" onClick={close} />}
