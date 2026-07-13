@@ -16,7 +16,7 @@ export default function Header() {
         </Link>
 
         <nav className="nav nav-d">
-          <Link href="/annuaire">Annuaire</Link>
+          <Link href="/membres">Membres</Link>
           <Link href="/besoins">Besoins</Link>
           <Link href="/recherche">Recherche</Link>
           <Link href="/abonnements">Formules</Link>
@@ -31,8 +31,10 @@ export default function Header() {
 
       {open && <div className="sheet-bg" onClick={close} />}
       <div className={'sheet' + (open ? ' open' : '')} role="dialog" aria-label="Menu">
+        <Link href="/membres" onClick={close}>Membres de la communauté</Link>
         <Link href="/annuaire" onClick={close}>Annuaire des pros</Link>
         <Link href="/recherche" onClick={close}>Recherche</Link>
+        <Link href="/a-propos" onClick={close}>À propos</Link>
         <Link href="/abonnements" onClick={close}>Nos formules</Link>
         <Link href="/guides" onClick={close}>Guides</Link>
         <Link href="/devis" onClick={close}>Demander un devis</Link>

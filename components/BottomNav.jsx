@@ -12,7 +12,7 @@ const Icon = ({ d, filled }) => (
 );
 const P = {
   home: 'M3 10.5 12 3l9 7.5M5.5 9.5V20h13V9.5',
-  feed: 'M4 6h16M4 12h16M4 18h10',
+  feed: 'M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9.5 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8',
   plus: 'M12 5v14M5 12h14',
   chat: 'M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12z',
   user: 'M20 21a8 8 0 1 0-16 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z',
@@ -53,7 +53,7 @@ export default function BottomNav() {
   const on = (href) => pathname === href || (href !== '/' && pathname.startsWith(href));
   const items = [
     { href: '/', label: 'Accueil', d: P.home },
-    { href: '/besoins', label: 'Besoins', d: P.feed },
+    { href: '/membres', label: 'Membres', d: P.feed },
     { href: '/publier', label: 'Publier', d: P.plus, cta: true },
     { href: '/messages', label: 'Messages', d: P.chat, badge: unread },
     { href: uid ? '/espace' : '/connexion', label: uid ? 'Espace' : 'Connexion', d: P.user },
