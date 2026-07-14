@@ -8,6 +8,7 @@ import Avatar from '@/components/Avatar';
 import BadgeVerifie from '@/components/BadgeVerifie';
 import Presence from '@/components/Presence';
 import BoutonReseau from '@/components/BoutonReseau';
+import BesoinCard from '@/components/BesoinCard';
 
 const TYPE_LABEL = { entreprise: 'Entreprise', particulier: 'Particulier', chercheur: "Chercheur d'emploi" };
 
@@ -15,26 +16,42 @@ export default function Profil({ params }) {
   const id = params.id;
   const [p, setP] = useState(null);
   const [me, setMe] = useState(null);
+  const [stats, setStats] = useState({ reseau: 0, abonnes: 0, abonnements: 0, annonces: 0 });
+  const [posts, setPosts] = useState([]);
   const [avis, setAvis] = useState([]);
-  const [stats, setStats] = useState({ abonnes: 0, abonnements: 0, annonces: 0 });
   const [note, setNote] = useState(5);
   const [texte, setTexte] = useState('');
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(true);
+  // liste (abonnés / abonnements / réseau)
+  const [liste, setListe] = useState(null);      // null | 'reseau' | 'abonnes' | 'abonnements'
+  const [membres, setMembres] = useState([]);
+  const [listeCharge, setListeCharge] = useState(false);
 
   const load = async () => {
     const { data } = await supabase.from('profiles').select('*').eq('id', id).maybeSingle();
     setP(data);
 
-    const [{ count: ab }, { count: abm }, { count: an }] = await Promise.all([
+    const [cx1, cx2, ab, abm, an] = await Promise.all([
+      supabase.from('connexions').select('id', { count: 'exact', head: true }).eq('demandeur', id).eq('statut', 'acceptee'),
+      supabase.from('connexions').select('id', { count: 'exact', head: true }).eq('destinataire', id).eq('statut', 'acceptee'),
       supabase.from('abonnes').select('id', { count: 'exact', head: true }).eq('suivi', id),
       supabase.from('abonnes').select('id', { count: 'exact', head: true }).eq('suiveur', id),
       supabase.from('besoins').select('id', { count: 'exact', head: true }).eq('auteur', id),
     ]);
-    setStats({ abonnes: ab || 0, abonnements: abm || 0, annonces: an || 0 });
+    setStats({
+      reseau: (cx1.count || 0) + (cx2.count || 0),
+      abonnes: ab.count || 0,
+      abonnements: abm.count || 0,
+      annonces: an.count || 0,
+    });
+
+    const { data: bs } = await supabase.from('besoins').select('*')
+      .eq('auteur', id).order('created_at', { ascending: false }).limit(3);
+    setPosts(bs || []);
 
     const { data: av } = await supabase.from('avis').select('*').eq('cible', id)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false }).limit(20);
     const ids = [...new Set((av || []).map((a) => a.auteur))];
     let nm = {};
     if (ids.length) {
@@ -54,6 +71,32 @@ export default function Profil({ params }) {
     })();
   }, [id]);
 
+  // Ouvrir une liste (abonnés / abonnements / réseau)
+  const ouvrirListe = async (quoi) => {
+    setListe(quoi); setListeCharge(false); setMembres([]);
+    let ids = [];
+    if (quoi === 'abonnes') {
+      const { data } = await supabase.from('abonnes').select('suiveur').eq('suivi', id);
+      ids = (data || []).map((x) => x.suiveur);
+    } else if (quoi === 'abonnements') {
+      const { data } = await supabase.from('abonnes').select('suivi').eq('suiveur', id);
+      ids = (data || []).map((x) => x.suivi);
+    } else {
+      const [{ data: d1 }, { data: d2 }] = await Promise.all([
+        supabase.from('connexions').select('destinataire').eq('demandeur', id).eq('statut', 'acceptee'),
+        supabase.from('connexions').select('demandeur').eq('destinataire', id).eq('statut', 'acceptee'),
+      ]);
+      ids = [...(d1 || []).map((x) => x.destinataire), ...(d2 || []).map((x) => x.demandeur)];
+    }
+    ids = [...new Set(ids)].slice(0, 50);
+    if (ids.length) {
+      const { data: ps } = await supabase.from('profiles')
+        .select('id,nom,avatar_url,type,ville,verifie').in('id', ids);
+      setMembres(ps || []);
+    }
+    setListeCharge(true);
+  };
+
   const submitAvis = async (e) => {
     e.preventDefault();
     setMsg('');
@@ -71,53 +114,103 @@ export default function Profil({ params }) {
 
   const interets = (p.interets || []).map((s) => (metierBySlug(s) ? metierBySlug(s).name : s));
   const moy = avis.length ? (avis.reduce((s, a) => s + a.note, 0) / avis.length).toFixed(1) : null;
+  const enLigne = p.derniere_activite && (Date.now() - new Date(p.derniere_activite).getTime()) / 1000 < 300;
+  const TITRES = { reseau: 'Son réseau', abonnes: 'Abonnés', abonnements: 'Abonnements' };
 
   return (
-    <main className="sec"><div className="wrap" style={{ maxWidth: 720 }}>
-      <div className="card">
-        <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          <div className="membre-av">
-            <Avatar url={p.avatar_url} nom={p.nom} size={84} />
-            {p.derniere_activite && (Date.now() - new Date(p.derniere_activite).getTime()) / 1000 < 300 && (
-              <span className="pastille-on" style={{ width: 18, height: 18 }} />
+    <main className="sec profil-page"><div className="wrap" style={{ maxWidth: 720, paddingTop: 0 }}>
+
+      {/* ── Bannière + carte d'identité (façon LinkedIn, à l'ivoirienne) ── */}
+      <div className="profil-hero card">
+        <div className="cover" aria-hidden="true">
+          <span className="cover-motif" />
+        </div>
+        <div className="profil-id">
+          <div className="profil-photo">
+            <Avatar url={p.avatar_url} nom={p.nom} size={96} />
+            {enLigne && <span className="pastille-on" style={{ width: 20, height: 20 }} />}
+          </div>
+          <div className="post-n" style={{ marginTop: 8 }}>
+            <h1 style={{ margin: 0, fontSize: '1.45rem' }}>{p.nom || 'Utilisateur'}</h1>
+            {p.verifie && <BadgeVerifie size="sm" />}
+          </div>
+          {p.bio && <p className="profil-titre">{p.bio}</p>}
+          <p className="muted sm" style={{ margin: '4px 0 0' }}>
+            {TYPE_LABEL[p.type] || p.type}{p.ville ? ` · ${p.ville}, Côte d’Ivoire` : ' · Côte d’Ivoire'}
+            {moy ? ` · ★ ${moy} (${avis.length})` : ''}
+          </p>
+          <Presence date={p.derniere_activite} />
+
+          {/* Statistiques cliquables */}
+          <div className="stats-bar">
+            <button onClick={() => ouvrirListe('reseau')}>
+              <span className="stat-n">{stats.reseau}</span><span className="stat-l">Réseau</span>
+            </button>
+            <button onClick={() => ouvrirListe('abonnes')}>
+              <span className="stat-n">{stats.abonnes}</span><span className="stat-l">Abonnés</span>
+            </button>
+            <button onClick={() => ouvrirListe('abonnements')}>
+              <span className="stat-n">{stats.abonnements}</span><span className="stat-l">Abonnements</span>
+            </button>
+            <span className="stat-fix">
+              <span className="stat-n">{stats.annonces}</span><span className="stat-l">Annonces</span>
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', gap: 8, marginTop: 14, flexWrap: 'wrap' }}>
+            {me === id ? (
+              <Link className="btn" href="/espace">Modifier mon profil</Link>
+            ) : (
+              <>
+                <BoutonReseau cibleId={id} me={me} />
+                {me && <a className="btn btn-ghost" href={`/messages?to=${id}`}>Message</a>}
+              </>
             )}
           </div>
-          <div style={{ flex: 1, minWidth: 180 }}>
-            <div className="post-n">
-              <h1 style={{ margin: 0, fontSize: '1.5rem' }}>{p.nom || 'Utilisateur'}</h1>
-              {p.verifie && <BadgeVerifie size="sm" />}
-            </div>
-            <p className="muted sm" style={{ margin: '4px 0' }}>
-              {TYPE_LABEL[p.type] || p.type}{p.ville ? ` · ${p.ville}` : ''}{moy ? ` · ★ ${moy} (${avis.length})` : ''}
-            </p>
-            <Presence date={p.derniere_activite} />
-          </div>
-        </div>
-
-        <div className="stats-profil">
-          <div><div className="stat-n">{stats.abonnes}</div><div className="stat-l">Abonnés</div></div>
-          <div><div className="stat-n">{stats.abonnements}</div><div className="stat-l">Abonnements</div></div>
-          <div><div className="stat-n">{stats.annonces}</div><div className="stat-l">Annonces</div></div>
-        </div>
-
-        {p.bio && <p style={{ marginTop: 14 }}>{p.bio}</p>}
-        {interets.length > 0 && (
-          <p className="muted sm" style={{ marginTop: 8 }}>Centres d’intérêt : {interets.join(', ')}</p>
-        )}
-
-        <div style={{ display: 'flex', gap: 8, marginTop: 16, flexWrap: 'wrap' }}>
-          <BoutonReseau cibleId={id} me={me} />
-          {me && me !== id && <a className="btn btn-ghost" href={`/messages?to=${id}`}>Envoyer un message</a>}
-          {me === id && <Link className="btn btn-ghost" href="/profil/modifier">Modifier mon profil</Link>}
         </div>
       </div>
 
+      {/* ── À propos ── */}
+      {p.bio && (
+        <div className="card" style={{ marginTop: 14 }}>
+          <h2 className="profil-h2">À propos</h2>
+          <p style={{ margin: '8px 0 0' }}>{p.bio}</p>
+        </div>
+      )}
+
+      {/* ── Centres d'intérêt ── */}
+      {interets.length > 0 && (
+        <div className="card" style={{ marginTop: 14 }}>
+          <h2 className="profil-h2">Centres d’intérêt</h2>
+          <div className="chips" style={{ marginTop: 10 }}>
+            {interets.map((i) => <span key={i} className="chip on" style={{ cursor: 'default' }}>{i}</span>)}
+          </div>
+        </div>
+      )}
+
+      {/* ── Activité (ses annonces) ── */}
+      <div style={{ marginTop: 22 }}>
+        <h2 className="profil-h2">Activité</h2>
+        {posts.length ? (
+          <div style={{ display: 'grid', gap: 14, marginTop: 10 }}>
+            {posts.map((b) => <BesoinCard key={b.id} b={b} me={me} />)}
+          </div>
+        ) : (
+          <div className="card" style={{ marginTop: 10 }}>
+            <p className="muted" style={{ margin: 0 }}>
+              {me === id ? 'Vous n’avez encore rien publié.' : 'Aucune publication pour l’instant.'}
+            </p>
+            {me === id && <Link className="btn btn-sm" href="/publier" style={{ marginTop: 10 }}>Publier ma première annonce</Link>}
+          </div>
+        )}
+      </div>
+
+      {/* ── Avis ── */}
       <div style={{ marginTop: 26 }}>
-        <p className="eyebrow">Avis</p>
-        <h2>Ce qu’on pense de {p.nom || 'ce profil'}</h2>
+        <h2 className="profil-h2">Avis {moy ? <span className="stars" style={{ fontSize: '1rem' }}>★ {moy}</span> : ''}</h2>
 
         {me && me !== id && (
-          <form className="card" onSubmit={submitAvis} style={{ marginBottom: 16 }}>
+          <form className="card" onSubmit={submitAvis} style={{ margin: '10px 0 14px' }}>
             <label style={{ fontWeight: 600, fontSize: '.9rem' }}>Votre note
               <select value={note} onChange={(e) => setNote(Number(e.target.value))}
                 style={{ marginLeft: 10, padding: 8, borderRadius: 9, border: '1px solid var(--line)', fontSize: 16 }}>
@@ -143,8 +236,41 @@ export default function Profil({ params }) {
               {a.texte && <p style={{ margin: '4px 0 0' }}>{a.texte}</p>}
             </div>
           </div>
-        )) : <p className="muted">Pas encore d’avis.</p>}
+        )) : <p className="muted" style={{ marginTop: 8 }}>Pas encore d’avis.</p>}
       </div>
+
+      {/* ── Liste abonnés / abonnements / réseau ── */}
+      {liste && (
+        <div className="modal-bg" onClick={() => setListe(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-label={TITRES[liste]}>
+            <h3 style={{ marginBottom: 10 }}>{TITRES[liste]}</h3>
+            {!listeCharge ? (
+              <p className="muted">Chargement…</p>
+            ) : membres.length ? (
+              <div style={{ display: 'grid', gap: 10, maxHeight: '55vh', overflowY: 'auto' }}>
+                {membres.map((m) => (
+                  <div key={m.id} style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+                    <Avatar url={m.avatar_url} nom={m.nom} size={40} href={`/profil/${m.id}`} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <Link href={`/profil/${m.id}`} onClick={() => setListe(null)}>
+                        <strong>{m.nom || 'Utilisateur'}</strong>
+                      </Link>
+                      {m.verifie && <BadgeVerifie size="sm" />}
+                      <p className="muted sm" style={{ margin: 0 }}>
+                        {TYPE_LABEL[m.type] || m.type}{m.ville ? ` · ${m.ville}` : ''}
+                      </p>
+                    </div>
+                    {me && me !== m.id && <BoutonReseau cibleId={m.id} me={me} petit />}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="muted">Personne pour l’instant.</p>
+            )}
+            <button className="btn btn-sm" style={{ marginTop: 14 }} onClick={() => setListe(null)}>Fermer</button>
+          </div>
+        </div>
+      )}
     </div></main>
   );
 }

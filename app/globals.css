@@ -383,3 +383,27 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .chat-attach{display:flex;align-items:center;justify-content:center;flex:0 0 44px;height:44px;
   border:1px solid var(--line);border-radius:12px;cursor:pointer;font-size:1.15rem;background:#fff}
 .chat-attach:hover{border-color:var(--gold)}
+
+/* ---------- PROFIL FAÇON LINKEDIN, À L'IVOIRIENNE ---------- */
+.profil-page .wrap{padding-top:10px}
+.profil-hero{padding:0;overflow:hidden}
+.cover{position:relative;height:118px;background:linear-gradient(115deg,var(--ink) 0%,var(--ink2) 55%,#3a2f1d 100%)}
+.cover-motif{position:absolute;inset:0;opacity:.5;
+  background:
+    radial-gradient(circle at 82% 30%, rgba(201,162,75,.5) 0, rgba(201,162,75,0) 34%),
+    repeating-linear-gradient(135deg, rgba(201,162,75,.16) 0 2px, transparent 2px 26px)}
+.cover:after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--gold),var(--gold-l),var(--gold))}
+.profil-id{padding:0 18px 18px;margin-top:-48px;position:relative}
+.profil-photo{position:relative;display:inline-block;border-radius:50%;
+  border:4px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.14)}
+.profil-photo .pastille-on{bottom:6px;right:6px}
+.profil-titre{margin:6px 0 0;font-weight:600;color:#4a4438;font-size:.98rem}
+.stats-bar{display:flex;gap:0;margin-top:14px;border:1px solid var(--line);border-radius:13px;overflow:hidden}
+.stats-bar button,.stats-bar .stat-fix{flex:1;background:#fff;border:none;padding:10px 4px;
+  display:flex;flex-direction:column;align-items:center;gap:1px;cursor:pointer;min-height:56px}
+.stats-bar .stat-fix{cursor:default}
+.stats-bar button:not(:first-child),.stats-bar .stat-fix{border-left:1px solid var(--line)}
+.stats-bar button:hover{background:#faf7f0}
+.stats-bar button:hover .stat-n{color:var(--gold-d)}
+.profil-h2{font-size:1.08rem;margin:0}
