@@ -15,8 +15,10 @@ export function AdSenseScript() {
   );
 }
 
-export default function AdSlot() {
+export function AdSlot() {
   const id = process.env.NEXT_PUBLIC_ADSENSE_ID;
-  if (!id) return <div className="ad-placeholder">Espace publicitaire</div>;
+  if (!id) return null;
   return <ins className="adsbygoogle" style={{ display: 'block' }} data-ad-client={id} data-ad-format="auto" />;
 }
+
+export default AdSlot;
