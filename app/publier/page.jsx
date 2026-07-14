@@ -7,9 +7,10 @@ import { VILLES } from '@/data/villes';
 import { uploadMedia } from '@/lib/media';
 
 const TYPES = [
-  { v: 'demande', label: 'Demande de prestation' },
-  { v: 'offre_emploi', label: "Offre d'emploi" },
-  { v: 'recherche', label: "Recherche d'emploi" },
+  { v: 'post', label: '📝 Publication simple' },
+  { v: 'demande', label: '🔨 Demande de prestation' },
+  { v: 'offre_emploi', label: "💼 Offre d'emploi" },
+  { v: 'recherche', label: "🙋 Recherche d'emploi" },
 ];
 const WA = '2250749074082';
 const waLink = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(
@@ -60,9 +61,19 @@ export default function Publier() {
         setLoading(false); setMsg(err.message); return;
       }
     }
+    const estPost = f.type === 'post';
+    if (estPost && !f.description.trim() && !media) {
+      setLoading(false); setMsg('Écrivez quelque chose ou ajoutez une photo.'); return;
+    }
+    const texte = f.description.trim();
     const { error } = await supabase.from('besoins').insert({
-      auteur: user.id, type: f.type, titre: f.titre, description: f.description,
-      metier: f.metier, ville: f.ville, lien: f.lien || null, media, media_type,
+      auteur: user.id,
+      type: f.type,
+      titre: estPost ? (texte ? texte.slice(0, 90) : 'Publication') : f.titre,
+      description: texte || null,
+      metier: estPost ? (f.metier || 'autres') : f.metier,
+      ville: f.ville || null,
+      lien: f.lien || null, media, media_type,
     });
     setLoading(false);
     if (error) { setMsg(error.message); return; }
@@ -72,22 +83,48 @@ export default function Publier() {
   if (!ready) return <main className="sec"><div className="wrap"><p className="muted">Chargement…</p></div></main>;
   return (
     <main className="sec"><div className="wrap" style={{ maxWidth: 620 }}>
-      <p className="eyebrow">Publier</p><h1>Publier un besoin ou une offre</h1>
+      <p className="eyebrow">Publier</p><h1>Publier</h1>
       <a className="btn" href={waLink} target="_blank" rel="noopener" style={{ background: '#25D366', color: '#fff', marginBottom: 14 }}>Publier en 1 message sur WhatsApp</a>
       <p className="muted sm" style={{ marginBottom: 18 }}>…ou remplissez le formulaire ci-dessous.</p>
       <form className="card form" onSubmit={submit}>
-        <label className="full">Type d’annonce
-          <select name="type" value={f.type} onChange={on}>{TYPES.map((t) => <option key={t.v} value={t.v}>{t.label}</option>)}</select>
-        </label>
-        <label className="full">Titre<input name="titre" value={f.titre} onChange={on} required placeholder="Ex. Recherche maçon pour dalle 40m²" /></label>
-        <label>Métier / domaine
-          <select name="metier" value={f.metier} onChange={on} required><option value="">Choisir…</option>{METIERS.map((m) => <option key={m.slug} value={m.slug}>{m.name}</option>)}</select>
-        </label>
-        <label>Ville
-          <select name="ville" value={f.ville} onChange={on}><option value="">Choisir…</option>{VILLES.map((v) => <option key={v} value={v}>{v}</option>)}</select>
-        </label>
-        <label className="full">Description<textarea name="description" value={f.description} onChange={on} rows={4} placeholder="Détaillez votre besoin, budget, délais…" /></label>
-        <label className="full">Lien d’origine (optionnel)<input name="lien" value={f.lien} onChange={on} placeholder="https://… (si l’annonce vient d’ailleurs)" /></label>
+        <div className="full">
+          <span style={{ fontWeight: 600, fontSize: '.9rem' }}>Que voulez-vous publier ?</span>
+          <div className="chips" style={{ marginTop: 8 }}>
+            {TYPES.map((t) => (
+              <button key={t.v} type="button" className={'chip' + (f.type === t.v ? ' on' : '')}
+                onClick={() => setF({ ...f, type: t.v })}>{t.label}</button>
+            ))}
+          </div>
+        </div>
+
+        {f.type === 'post' ? (
+          <>
+            <label className="full">Votre publication
+              <textarea name="description" value={f.description} onChange={on} rows={5} autoFocus
+                placeholder="Exprimez-vous : une actualité, un conseil, une réalisation, une question à la communauté…" />
+            </label>
+            <label>Domaine (facultatif)
+              <select name="metier" value={f.metier} onChange={on}><option value="">Général</option>{METIERS.map((m) => <option key={m.slug} value={m.slug}>{m.name}</option>)}</select>
+            </label>
+            <label>Ville (facultatif)
+              <select name="ville" value={f.ville} onChange={on}><option value="">Toute la Côte d’Ivoire</option>{VILLES.map((v) => <option key={v} value={v}>{v}</option>)}</select>
+            </label>
+          </>
+        ) : (
+          <>
+            <label className="full">Titre<input name="titre" value={f.titre} onChange={on} required placeholder="Ex. Recherche maçon pour dalle 40m²" /></label>
+            <label>Métier / domaine
+              <select name="metier" value={f.metier} onChange={on} required><option value="">Choisir…</option>{METIERS.map((m) => <option key={m.slug} value={m.slug}>{m.name}</option>)}</select>
+            </label>
+            <label>Ville
+              <select name="ville" value={f.ville} onChange={on}><option value="">Choisir…</option>{VILLES.map((v) => <option key={v} value={v}>{v}</option>)}</select>
+            </label>
+            <label className="full">Description<textarea name="description" value={f.description} onChange={on} rows={4} placeholder="Détaillez votre besoin, budget, délais…" /></label>
+          </>
+        )}
+        {f.type !== 'post' && (
+          <label className="full">Lien d’origine (optionnel)<input name="lien" value={f.lien} onChange={on} placeholder="https://… (si l’annonce vient d’ailleurs)" /></label>
+        )}
         <div className="full">
           <span style={{ fontWeight: 600, fontSize: '.9rem' }}>Photo ou vidéo (facultatif)</span>
           {!fichier ? (

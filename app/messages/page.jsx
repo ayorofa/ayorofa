@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { ilya } from '@/lib/meta';
 import { uploadMedia } from '@/lib/media';
 import MediaView from '@/components/MediaView';
+import EmojiPicker from '@/components/EmojiPicker';
 import Avatar from '@/components/Avatar';
 
 function MessagesInner() {
@@ -73,9 +74,41 @@ function MessagesInner() {
 
   useEffect(() => { if (endRef.current) endRef.current.scrollIntoView({ behavior: 'smooth' }); }, [activeMsgs.length]);
 
+  useEffect(() => {
+    if (!supabase || !me || !active) return;
+    chargerReactionsMsgs(activeMsgs.map((x) => x.id));
+  }, [active, me, thread.length]);
+
   const [fichier, setFichier] = useState(null);
   const [envoi, setEnvoi] = useState(false);
   const [errMedia, setErrMedia] = useState('');
+  const [msgRx, setMsgRx] = useState({});     // réactions par message
+  const [pickMsg, setPickMsg] = useState(null);
+
+  const chargerReactionsMsgs = async (ids) => {
+    if (!ids.length) { setMsgRx({}); return; }
+    const { data } = await supabase.from('reactions_messages')
+      .select('message,emoji,auteur').in('message', ids);
+    const map = {};
+    (data || []).forEach((r) => {
+      if (!map[r.message]) map[r.message] = { emojis: [], mine: null };
+      map[r.message].emojis.push(r.emoji);
+      if (r.auteur === me) map[r.message].mine = r.emoji;
+    });
+    setMsgRx(map);
+  };
+
+  const reagirMsg = async (mId, emoji) => {
+    setPickMsg(null);
+    const mien = msgRx[mId] && msgRx[mId].mine;
+    if (mien === emoji) {
+      await supabase.from('reactions_messages').delete().eq('message', mId).eq('auteur', me);
+    } else {
+      await supabase.from('reactions_messages').upsert(
+        { message: mId, auteur: me, emoji }, { onConflict: 'message,auteur' });
+    }
+    await chargerReactionsMsgs(activeMsgs.map((x) => x.id));
+  };
 
   const send = async (e) => {
     e.preventDefault();
@@ -130,12 +163,28 @@ function MessagesInner() {
                 <span>{nomDe(active)}</span>
               </div>
               <div className="chat-msgs">
-                {activeMsgs.map((m) => (
-                  <div key={m.id} className={'bubble' + (m.expediteur === me ? ' me' : '')}>
-                    {m.media && <MediaView url={m.media} type={m.media_type} petit />}
-                    {m.contenu}<span className="bt">{ilya(m.created_at)}</span>
-                  </div>
-                ))}
+                {activeMsgs.map((m) => {
+                  const r = msgRx[m.id];
+                  return (
+                    <div key={m.id} className={'bubble-wrap' + (m.expediteur === me ? ' me' : '')}>
+                      <div className={'bubble' + (m.expediteur === me ? ' me' : '')}>
+                        {m.media && <MediaView url={m.media} type={m.media_type} petit />}
+                        {m.contenu}
+                        <span className="bt">{ilya(m.created_at)}</span>
+                        <button type="button" className="bubble-react" aria-label="Réagir à ce message"
+                          onClick={() => setPickMsg(pickMsg === m.id ? null : m.id)}>☺</button>
+                      </div>
+                      {pickMsg === m.id && (
+                        <span style={{ position: 'relative', alignSelf: m.expediteur === me ? 'flex-end' : 'flex-start' }}>
+                          <EmojiPicker actif={r && r.mine} onPick={(e) => reagirMsg(m.id, e)} />
+                        </span>
+                      )}
+                      {r && r.emojis.length > 0 && (
+                        <span className="rx-chip bulle">{[...new Set(r.emojis)].join('')}{r.emojis.length > 1 ? ' ' + r.emojis.length : ''}</span>
+                      )}
+                    </div>
+                  );
+                })}
                 <div ref={endRef} />
               </div>
               {fichier && (

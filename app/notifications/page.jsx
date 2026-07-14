@@ -11,6 +11,7 @@ const TEXTE = {
   connexion_acceptee: 'a accepté votre demande — vous êtes connectés 🎉',
   reaction: 'a réagi à votre annonce 👍',
   commentaire: 'a commenté votre annonce 💬',
+  reponse: 'a répondu à votre commentaire ↩️',
   abonnement: 's’est abonné à votre profil',
   interet: 'est intéressé par votre annonce',
 };
