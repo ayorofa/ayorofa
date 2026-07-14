@@ -17,6 +17,9 @@ export default function Footer() {
           <Link href="/besoins">Besoins</Link>
           <Link href="/abonnements">Nos formules</Link>
           <Link href="/guides">Guides</Link>
+          <Link href="/a-propos">À propos</Link>
+          <Link href="/cgu">CGU</Link>
+          <Link href="/mentions-legales">Mentions légales</Link>
           <Link href="/confidentialite">Confidentialité</Link>
         </nav>
       </div>
