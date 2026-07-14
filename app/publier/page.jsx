@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { METIERS } from '@/data/metiers';
 import { VILLES } from '@/data/villes';
+import { uploadMedia } from '@/lib/media';
 
 const TYPES = [
   { v: 'demande', label: 'Demande de prestation' },
@@ -20,6 +21,16 @@ export default function Publier() {
   const [f, setF] = useState({ type: 'demande', titre: '', description: '', metier: '', ville: '', lien: '' });
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(false);
+  const [fichier, setFichier] = useState(null);
+  const [apercu, setApercu] = useState(null);
+
+  const choisirFichier = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    setFichier(file);
+    setApercu(file.type.startsWith('image/') ? URL.createObjectURL(file) : null);
+  };
+  const retirerFichier = () => { setFichier(null); setApercu(null); };
 
   useEffect(() => {
     if (!supabase) { setReady(true); return; }
@@ -40,9 +51,18 @@ export default function Publier() {
     setLoading(true); setMsg('');
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { router.push('/connexion'); return; }
+    let media = null, media_type = null;
+    if (fichier) {
+      try {
+        const up = await uploadMedia(supabase, fichier, user.id);
+        media = up.url; media_type = up.type;
+      } catch (err) {
+        setLoading(false); setMsg(err.message); return;
+      }
+    }
     const { error } = await supabase.from('besoins').insert({
       auteur: user.id, type: f.type, titre: f.titre, description: f.description,
-      metier: f.metier, ville: f.ville, lien: f.lien || null,
+      metier: f.metier, ville: f.ville, lien: f.lien || null, media, media_type,
     });
     setLoading(false);
     if (error) { setMsg(error.message); return; }
@@ -68,6 +88,21 @@ export default function Publier() {
         </label>
         <label className="full">Description<textarea name="description" value={f.description} onChange={on} rows={4} placeholder="Détaillez votre besoin, budget, délais…" /></label>
         <label className="full">Lien d’origine (optionnel)<input name="lien" value={f.lien} onChange={on} placeholder="https://… (si l’annonce vient d’ailleurs)" /></label>
+        <div className="full">
+          <span style={{ fontWeight: 600, fontSize: '.9rem' }}>Photo ou vidéo (facultatif)</span>
+          {!fichier ? (
+            <label className="media-add">
+              📷 Ajouter une photo ou une vidéo
+              <input type="file" accept="image/*,video/*" onChange={choisirFichier} style={{ display: 'none' }} />
+            </label>
+          ) : (
+            <div className="media-prev">
+              {apercu ? <img src={apercu} alt="" /> : <span className="media-nom">🎥 {fichier.name}</span>}
+              <button type="button" className="media-x" onClick={retirerFichier} aria-label="Retirer">✕</button>
+            </div>
+          )}
+          <p className="muted sm" style={{ margin: '6px 0 0' }}>Photo : 6 Mo max · Vidéo : 25 Mo max</p>
+        </div>
         {msg && <div className="full" style={{ color: '#b3261e' }}>{msg}</div>}
         <button className="btn full" type="submit" disabled={loading}>{loading ? '…' : 'Publier'}</button>
       </form>

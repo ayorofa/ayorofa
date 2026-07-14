@@ -1,4 +1,4 @@
-// Professionnels vedettes — informations réelles, vérifiées sur leurs sites officiels.
+// Professionnels vedettes — informations réelles (site officiel safechaf.com).
 export const PROS = [
   {
     slug: 'safechaf',
@@ -14,3 +14,12 @@ export const PROS = [
     verifie: true,
   },
 ];
+
+// ── Fonctions utilisées par les pages /pro/[slug], /annuaire et /guides ──
+export const proBySlug = (slug) => PROS.find((p) => p.slug === slug) || null;
+export const prosByMetier = (metier) => PROS.filter((p) => p.metier === metier);
+export const prosByVille = (ville) => PROS.filter((p) => p.ville === ville);
+export const prosVedettes = () => PROS.filter((p) => p.verifie);
+export const getPro = proBySlug;
+
+export default PROS;

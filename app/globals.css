@@ -346,3 +346,40 @@ h3{font-size:1.1rem;margin:0 0 .3em}
   width:44px;height:44px;color:#e9ecf1;border-radius:12px}
 .hdr-msg:active{background:rgba(255,255,255,.08)}
 .hdr-msg .bnav-b{top:6px;right:5px}
+
+/* ---------- ÉDITION DE POSTS & COMMENTAIRES ---------- */
+.menu-wrap{position:relative;flex:0 0 auto}
+.menu-btn{background:none;border:none;font-size:1.3rem;font-weight:800;color:var(--muted);
+  cursor:pointer;padding:4px 10px;min-width:40px;min-height:40px;border-radius:10px;line-height:1}
+.menu-btn:hover{background:#f2ecdd;color:var(--ink)}
+.menu-pop{position:absolute;right:0;top:42px;z-index:30;background:#fff;border:1px solid var(--line);
+  border-radius:13px;box-shadow:0 12px 34px rgba(0,0,0,.16);display:flex;flex-direction:column;min-width:170px;overflow:hidden}
+.menu-pop button{background:none;border:none;text-align:left;padding:13px 15px;font-size:.93rem;
+  font-weight:600;color:var(--text);cursor:pointer;min-height:46px}
+.menu-pop button:hover{background:#faf7f0}
+.menu-pop button.danger{color:#b3261e}
+.cmt-actions{display:flex;gap:6px;align-items:center;margin-top:4px}
+.cmt-actions button{background:none;border:none;padding:4px 2px;font-size:.78rem;font-weight:700;
+  color:var(--muted);cursor:pointer}
+.cmt-actions button:hover{color:var(--ink)}
+.cmt-actions .danger:hover{color:#b3261e}
+.cmt-actions span{color:var(--line)}
+
+/* ---------- PHOTOS & VIDÉOS ---------- */
+.media-add{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;
+  border:2px dashed var(--line);border-radius:13px;padding:18px;font-weight:600;font-size:.92rem;
+  color:var(--muted);cursor:pointer;min-height:56px}
+.media-add:hover{border-color:var(--gold);color:var(--gold-d)}
+.media-prev{position:relative;margin-top:8px;border-radius:13px;overflow:hidden;border:1px solid var(--line)}
+.media-prev img{width:100%;max-height:260px;object-fit:cover;display:block}
+.media-nom{display:block;padding:16px;font-weight:600;font-size:.92rem}
+.media-x{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.62);color:#fff;border:none;
+  width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:.95rem}
+.media-chip{display:flex;align-items:center;gap:8px;margin:6px 12px 0;background:#f7f3ea;
+  border:1px solid var(--line);border-radius:11px;padding:8px 12px;font-size:.85rem;font-weight:600;
+  max-width:calc(100% - 24px);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.media-chip button{background:none;border:none;color:#b3261e;font-weight:800;cursor:pointer;
+  margin-left:auto;padding:4px 6px}
+.chat-attach{display:flex;align-items:center;justify-content:center;flex:0 0 44px;height:44px;
+  border:1px solid var(--line);border-radius:12px;cursor:pointer;font-size:1.15rem;background:#fff}
+.chat-attach:hover{border-color:var(--gold)}

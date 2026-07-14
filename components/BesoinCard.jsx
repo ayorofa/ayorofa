@@ -7,18 +7,30 @@ import { BTYPE, ilya } from '@/lib/meta';
 import Avatar from '@/components/Avatar';
 import BadgeVerifie from '@/components/BadgeVerifie';
 import Signaler from '@/components/Signaler';
+import MediaView from '@/components/MediaView';
 
 const ghost = { background: 'transparent', border: '1px solid var(--line)', color: 'var(--text)' };
 
 export default function BesoinCard({ b, me }) {
   const t = BTYPE[b.type] || { label: b.type, color: '#666' };
   const m = metierBySlug(b.metier);
+  const [post, setPost] = useState(b);
+  const [supprime, setSupprime] = useState(false);
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [auteur, setAuteur] = useState({ nom: 'Utilisateur', avatar_url: null, verifie: false });
   const [showC, setShowC] = useState(false);
   const [comments, setComments] = useState([]);
   const [ctext, setCtext] = useState('');
+  // édition du post
+  const [menu, setMenu] = useState(false);
+  const [edition, setEdition] = useState(false);
+  const [eTitre, setETitre] = useState(b.titre || '');
+  const [eDesc, setEDesc] = useState(b.description || '');
+  const [busy, setBusy] = useState(false);
+  // édition d'un commentaire
+  const [editCid, setEditCid] = useState(null);
+  const [editCtxt, setEditCtxt] = useState('');
 
   useEffect(() => {
     if (!supabase) return;
@@ -39,6 +51,7 @@ export default function BesoinCard({ b, me }) {
     if (liked) { await supabase.from('reactions').delete().eq('besoin', b.id).eq('auteur', me); setLiked(false); setLikes((x) => x - 1); }
     else { await supabase.from('reactions').insert({ besoin: b.id, auteur: me }); setLiked(true); setLikes((x) => x + 1); }
   };
+
   const loadComments = async () => {
     const { data } = await supabase.from('commentaires').select('*').eq('besoin', b.id).order('created_at', { ascending: true });
     const ids = [...new Set((data || []).map((c) => c.auteur))];
@@ -50,6 +63,7 @@ export default function BesoinCard({ b, me }) {
     setComments((data || []).map((c) => ({ ...c, ...(nm[c.auteur] || { nom: 'Utilisateur', avatar_url: null }) })));
   };
   const openC = async () => { const n = !showC; setShowC(n); if (n) await loadComments(); };
+
   const addComment = async (e) => {
     e.preventDefault();
     if (!ctext.trim()) return;
@@ -57,6 +71,39 @@ export default function BesoinCard({ b, me }) {
     await supabase.from('commentaires').insert({ besoin: b.id, auteur: me, texte: ctext.trim() });
     setCtext(''); await loadComments();
   };
+
+  // ── modifier / supprimer MON post ──
+  const sauverPost = async (e) => {
+    e.preventDefault();
+    if (!eTitre.trim()) return;
+    setBusy(true);
+    const maj = { titre: eTitre.trim(), description: eDesc.trim() || null, modifie_le: new Date().toISOString() };
+    const { error } = await supabase.from('besoins').update(maj).eq('id', b.id);
+    setBusy(false);
+    if (!error) { setPost({ ...post, ...maj }); setEdition(false); }
+  };
+  const supprimerPost = async () => {
+    if (!window.confirm('Supprimer définitivement cette annonce ?')) return;
+    setBusy(true);
+    const { error } = await supabase.from('besoins').delete().eq('id', b.id);
+    setBusy(false);
+    if (!error) setSupprime(true);
+  };
+
+  // ── modifier / supprimer MON commentaire ──
+  const sauverCommentaire = async (c) => {
+    if (!editCtxt.trim()) return;
+    await supabase.from('commentaires')
+      .update({ texte: editCtxt.trim(), modifie_le: new Date().toISOString() }).eq('id', c.id);
+    setEditCid(null); setEditCtxt('');
+    await loadComments();
+  };
+  const supprimerCommentaire = async (c) => {
+    if (!window.confirm('Supprimer ce commentaire ?')) return;
+    await supabase.from('commentaires').delete().eq('id', c.id);
+    await loadComments();
+  };
+
   const interesse = async () => {
     if (!me) { window.location.href = '/inscription'; return; }
     await supabase.from('notifications').insert({ destinataire: b.auteur, besoin: b.id });
@@ -65,6 +112,8 @@ export default function BesoinCard({ b, me }) {
   const contactHref = b.contact
     ? 'https://wa.me/' + String(b.contact).replace(/\D/g, '')
     : '/messages?to=' + b.auteur;
+
+  if (supprime) return null;
 
   return (
     <div className="card">
@@ -77,15 +126,43 @@ export default function BesoinCard({ b, me }) {
           </div>
           <p className="muted sm" style={{ margin: 0 }}>
             {m ? m.name : b.metier}{b.ville ? ` · ${b.ville}` : ''} · {ilya(b.created_at)}
+            {post.modifie_le && <em> · modifié</em>}
           </p>
         </div>
         <span className="badge" style={{ color: t.color, background: t.color + '1a' }}>{t.label}</span>
+        {me === b.auteur && (
+          <span className="menu-wrap">
+            <button className="menu-btn" aria-label="Options de l’annonce" onClick={() => setMenu(!menu)}>⋯</button>
+            {menu && (
+              <span className="menu-pop" onClick={() => setMenu(false)}>
+                <button type="button" onClick={() => { setEdition(true); setETitre(post.titre || ''); setEDesc(post.description || ''); }}>✏️ Modifier</button>
+                <button type="button" className="danger" onClick={supprimerPost} disabled={busy}>🗑 Supprimer</button>
+              </span>
+            )}
+          </span>
+        )}
       </div>
 
-      <h3 style={{ margin: '10px 0 4px' }}>{b.titre}</h3>
-      {b.source && <p className="muted sm" style={{ marginTop: 2 }}>Repéré par Ayôrôfa · {b.source}</p>}
-      {b.description && <p style={{ marginTop: 6 }}>{b.description}</p>}
-      {b.lien && <p style={{ marginTop: 6 }}><a href={b.lien} target="_blank" rel="noopener">Voir l’annonce d’origine ↗</a></p>}
+      {edition ? (
+        <form onSubmit={sauverPost} style={{ marginTop: 10, display: 'grid', gap: 8 }}>
+          <input value={eTitre} onChange={(e) => setETitre(e.target.value)} required
+            style={{ width: '100%', padding: 11, border: '1px solid var(--line)', borderRadius: 10, fontSize: 16, fontWeight: 700 }} />
+          <textarea value={eDesc} onChange={(e) => setEDesc(e.target.value)} rows={3}
+            style={{ width: '100%', padding: 11, border: '1px solid var(--line)', borderRadius: 10, fontFamily: 'inherit', fontSize: 16 }} />
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button className="btn btn-sm" type="submit" disabled={busy}>{busy ? '…' : 'Enregistrer'}</button>
+            <button className="btn btn-sm" type="button" style={ghost} onClick={() => setEdition(false)}>Annuler</button>
+          </div>
+        </form>
+      ) : (
+        <>
+          <h3 style={{ margin: '10px 0 4px' }}>{post.titre}</h3>
+          {b.source && <p className="muted sm" style={{ marginTop: 2 }}>Repéré par Ayôrôfa · {b.source}</p>}
+          {post.description && <p style={{ marginTop: 6 }}>{post.description}</p>}
+          <MediaView url={b.media} type={b.media_type} />
+          {b.lien && <p style={{ marginTop: 6 }}><a href={b.lien} target="_blank" rel="noopener">Voir l’annonce d’origine ↗</a></p>}
+        </>
+      )}
 
       <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap', alignItems: 'center' }}>
         <button className="btn btn-sm" style={liked ? {} : ghost} onClick={toggleLike}>👍 {likes}</button>
@@ -107,8 +184,24 @@ export default function BesoinCard({ b, me }) {
               <Avatar url={c.avatar_url} nom={c.nom} size={32} href={`/profil/${c.auteur}`} />
               <div className="cmt-b">
                 <Link href={`/profil/${c.auteur}`}><strong>{c.nom}</strong></Link>{' '}
-                <span className="muted sm">{ilya(c.created_at)}</span>
-                <div>{c.texte}</div>
+                <span className="muted sm">{ilya(c.created_at)}{c.modifie_le ? ' · modifié' : ''}</span>
+                {editCid === c.id ? (
+                  <div style={{ display: 'flex', gap: 6, marginTop: 6 }}>
+                    <input value={editCtxt} onChange={(e) => setEditCtxt(e.target.value)}
+                      style={{ flex: 1, padding: 9, border: '1px solid var(--line)', borderRadius: 9, fontSize: 16 }} />
+                    <button className="btn btn-sm" type="button" onClick={() => sauverCommentaire(c)}>OK</button>
+                    <button className="btn btn-sm" type="button" style={ghost} onClick={() => setEditCid(null)}>✕</button>
+                  </div>
+                ) : (
+                  <div>{c.texte}</div>
+                )}
+                {me === c.auteur && editCid !== c.id && (
+                  <div className="cmt-actions">
+                    <button type="button" onClick={() => { setEditCid(c.id); setEditCtxt(c.texte); }}>Modifier</button>
+                    <span>·</span>
+                    <button type="button" className="danger" onClick={() => supprimerCommentaire(c)}>Supprimer</button>
+                  </div>
+                )}
               </div>
             </div>
           ))}

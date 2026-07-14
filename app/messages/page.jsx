@@ -3,6 +3,8 @@ import { Suspense, useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabaseClient';
 import { ilya } from '@/lib/meta';
+import { uploadMedia } from '@/lib/media';
+import MediaView from '@/components/MediaView';
 import Avatar from '@/components/Avatar';
 
 function MessagesInner() {
@@ -71,14 +73,30 @@ function MessagesInner() {
 
   useEffect(() => { if (endRef.current) endRef.current.scrollIntoView({ behavior: 'smooth' }); }, [activeMsgs.length]);
 
+  const [fichier, setFichier] = useState(null);
+  const [envoi, setEnvoi] = useState(false);
+  const [errMedia, setErrMedia] = useState('');
+
   const send = async (e) => {
     e.preventDefault();
-    if (!text.trim() || !active) return;
+    if ((!text.trim() && !fichier) || !active) return;
     const contenu = text.trim();
-    setText('');
+    setEnvoi(true); setErrMedia('');
+    let media = null, media_type = null;
+    if (fichier) {
+      try {
+        const up = await uploadMedia(supabase, fichier, me);
+        media = up.url; media_type = up.type;
+      } catch (err) {
+        setEnvoi(false); setErrMedia(err.message); return;
+      }
+    }
+    setText(''); setFichier(null);
     const { data } = await supabase.from('messages')
-      .insert({ expediteur: me, destinataire: active, contenu }).select().single();
+      .insert({ expediteur: me, destinataire: active, contenu: contenu || null, media, media_type })
+      .select().single();
     if (data) setThread((t) => [...t, data]);
+    setEnvoi(false);
   };
 
   const nomDe = (id) => (profils[id] && profils[id].nom) || 'Utilisateur';
@@ -97,7 +115,7 @@ function MessagesInner() {
               <Avatar url={photoDe(c.other)} nom={nomDe(c.other)} size={42} />
               <span className="conv-t">
                 <span className="conv-n">{nomDe(c.other)}</span>
-                <span className="conv-l">{c.last.contenu}</span>
+                <span className="conv-l">{c.last.media ? (c.last.media_type === 'video' ? '🎥 Vidéo' : '📷 Photo') : c.last.contenu}</span>
               </span>
               {c.unread > 0 && <span className="dot">{c.unread}</span>}
             </button>
@@ -114,14 +132,27 @@ function MessagesInner() {
               <div className="chat-msgs">
                 {activeMsgs.map((m) => (
                   <div key={m.id} className={'bubble' + (m.expediteur === me ? ' me' : '')}>
+                    {m.media && <MediaView url={m.media} type={m.media_type} petit />}
                     {m.contenu}<span className="bt">{ilya(m.created_at)}</span>
                   </div>
                 ))}
                 <div ref={endRef} />
               </div>
+              {fichier && (
+                <div className="media-chip">
+                  {fichier.type.startsWith('video/') ? '🎥' : '📷'} {fichier.name}
+                  <button type="button" onClick={() => setFichier(null)} aria-label="Retirer">✕</button>
+                </div>
+              )}
+              {errMedia && <p className="muted sm" style={{ color: '#b3261e', margin: '4px 12px' }}>{errMedia}</p>}
               <form className="chat-form" onSubmit={send}>
+                <label className="chat-attach" aria-label="Joindre une photo ou une vidéo">
+                  📎
+                  <input type="file" accept="image/*,video/*" style={{ display: 'none' }}
+                    onChange={(e) => { const f = e.target.files && e.target.files[0]; if (f) setFichier(f); e.target.value = ''; }} />
+                </label>
                 <input value={text} onChange={(e) => setText(e.target.value)} placeholder="Écrire un message…" />
-                <button className="btn" type="submit">Envoyer</button>
+                <button className="btn" type="submit" disabled={envoi}>{envoi ? '…' : 'Envoyer'}</button>
               </form>
             </>
           ) : <p className="muted" style={{ padding: 20 }}>Sélectionnez une conversation.</p>}
