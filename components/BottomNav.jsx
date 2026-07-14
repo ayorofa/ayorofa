@@ -56,7 +56,7 @@ export default function BottomNav() {
     { href: '/membres', label: 'Réseau', d: P.reseau },
     { href: '/publier', label: 'Publier', d: P.plus, cta: true },
     { href: uid ? '/notifications' : '/connexion', label: 'Notifs', d: P.cloche, badge: nonLues },
-    { href: uid ? '/espace' : '/connexion', label: uid ? 'Espace' : 'Connexion', d: P.user },
+    { href: uid ? `/profil/${uid}` : '/connexion', label: uid ? 'Profil' : 'Connexion', d: P.user },
   ];
 
   return (

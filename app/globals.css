@@ -407,3 +407,21 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .stats-bar button:hover{background:#faf7f0}
 .stats-bar button:hover .stat-n{color:var(--gold-d)}
 .profil-h2{font-size:1.08rem;margin:0}
+
+/* ---------- BANNIÈRE MODIFIABLE ---------- */
+.cover-edit{position:absolute;top:10px;right:10px;z-index:5;background:rgba(0,0,0,.55);color:#fff;
+  border-radius:22px;padding:8px 14px;font-size:.8rem;font-weight:700;cursor:pointer;
+  display:inline-flex;align-items:center;gap:5px;min-height:36px;backdrop-filter:blur(3px)}
+.cover-edit:hover{background:rgba(0,0,0,.72)}
+
+/* ---------- ZONE « QUOI DE NEUF ? » (fil) ---------- */
+.composer{padding:14px 14px 8px;margin-bottom:6px}
+.composer-top{display:flex;gap:11px;align-items:center}
+.composer-input{flex:1;display:block;border:1.5px solid var(--line);border-radius:26px;
+  padding:13px 17px;font-size:.92rem;font-weight:600;color:var(--muted);min-height:48px;
+  background:#fdfbf6;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.composer-input:hover{background:#faf6ec;border-color:var(--gold)}
+.composer-actions{display:flex;margin-top:8px;border-top:1px solid var(--line)}
+.composer-actions a{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;
+  padding:11px 4px;font-size:.86rem;font-weight:700;color:var(--muted);border-radius:10px;min-height:46px}
+.composer-actions a:hover{background:#faf7f0;color:var(--gold-d)}

@@ -9,6 +9,7 @@ import BadgeVerifie from '@/components/BadgeVerifie';
 import Presence from '@/components/Presence';
 import BoutonReseau from '@/components/BoutonReseau';
 import BesoinCard from '@/components/BesoinCard';
+import { uploadMedia } from '@/lib/media';
 
 const TYPE_LABEL = { entreprise: 'Entreprise', particulier: 'Particulier', chercheur: "Chercheur d'emploi" };
 
@@ -25,6 +26,22 @@ export default function Profil({ params }) {
   const [loading, setLoading] = useState(true);
   // liste (abonnés / abonnements / réseau)
   const [liste, setListe] = useState(null);      // null | 'reseau' | 'abonnes' | 'abonnements'
+  const [banniereEnvoi, setBanniereEnvoi] = useState(false);
+
+  const changerBanniere = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { alert('Choisissez une photo (image).'); return; }
+    setBanniereEnvoi(true);
+    try {
+      const up = await uploadMedia(supabase, file, me);
+      await supabase.from('profiles').update({ banniere: up.url }).eq('id', me);
+      setP((prev) => ({ ...prev, banniere: up.url }));
+    } catch (err) {
+      alert(err.message);
+    }
+    setBanniereEnvoi(false);
+  };
   const [membres, setMembres] = useState([]);
   const [listeCharge, setListeCharge] = useState(false);
 
@@ -122,8 +139,14 @@ export default function Profil({ params }) {
 
       {/* ── Bannière + carte d'identité (façon LinkedIn, à l'ivoirienne) ── */}
       <div className="profil-hero card">
-        <div className="cover" aria-hidden="true">
-          <span className="cover-motif" />
+        <div className="cover" style={p.banniere ? { backgroundImage: `url(${p.banniere})`, backgroundSize: 'cover', backgroundPosition: 'center' } : undefined}>
+          {!p.banniere && <span className="cover-motif" aria-hidden="true" />}
+          {me === id && (
+            <label className="cover-edit" aria-label="Changer la photo de couverture">
+              {banniereEnvoi ? '…' : '📷 Couverture'}
+              <input type="file" accept="image/*" onChange={changerBanniere} style={{ display: 'none' }} />
+            </label>
+          )}
         </div>
         <div className="profil-id">
           <div className="profil-photo">

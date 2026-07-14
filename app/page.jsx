@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import BesoinCard from '@/components/BesoinCard';
+import Avatar from '@/components/Avatar';
 import SponsorBanner from '@/components/SponsorBanner';
 import { METIERS } from '@/data/metiers';
 import { VILLES } from '@/data/villes';
@@ -19,6 +20,7 @@ export default function Accueil() {
   const [loading, setLoading] = useState(true);
   const [uid, setUid] = useState(null);
   const [suivis, setSuivis] = useState([]);       // les gens que je suis
+  const [moi, setMoi] = useState({ nom: '', avatar_url: null });
   const [onglet, setOnglet] = useState('tout');   // tout | abonnements
   const [type, setType] = useState('');
   const [metier, setMetier] = useState('');
@@ -36,6 +38,8 @@ export default function Accueil() {
       if (me) {
         const { data: ab } = await supabase.from('abonnes').select('suivi').eq('suiveur', me);
         setSuivis((ab || []).map((a) => a.suivi));
+        const { data: mp } = await supabase.from('profiles').select('nom,avatar_url').eq('id', me).maybeSingle();
+        if (mp) setMoi(mp);
       }
 
       const { data } = await supabase.from('besoins').select('*')
@@ -75,13 +79,29 @@ export default function Accueil() {
 
       <main className="sec">
         <div className="wrap feed">
-          <div className="feed-head">
-            <div>
-              <p className="eyebrow">En direct 🔴</p>
-              <h2 style={{ margin: 0 }}>Besoins & opportunités</h2>
+          {uid ? (
+            <div className="composer card">
+              <div className="composer-top">
+                <Avatar url={moi.avatar_url} nom={moi.nom} size={44} href={`/profil/${uid}`} />
+                <Link href="/publier" className="composer-input">
+                  Quoi de neuf{moi.nom ? `, ${moi.nom.split(' ')[0]}` : ''} ? Publiez un besoin ou une offre…
+                </Link>
+              </div>
+              <div className="composer-actions">
+                <Link href="/publier">📷 <span>Photo</span></Link>
+                <Link href="/publier">🎥 <span>Vidéo</span></Link>
+                <Link href="/publier">📢 <span>Annonce</span></Link>
+              </div>
             </div>
-            <Link href={uid ? '/publier' : '/inscription'} className="btn btn-sm">Publier</Link>
-          </div>
+          ) : (
+            <div className="feed-head">
+              <div>
+                <p className="eyebrow">En direct 🔴</p>
+                <h2 style={{ margin: 0 }}>Besoins & opportunités</h2>
+              </div>
+              <Link href="/inscription" className="btn btn-sm">Publier</Link>
+            </div>
+          )}
 
           {/* Onglets : Tout / Mes abonnements */}
           {uid && (

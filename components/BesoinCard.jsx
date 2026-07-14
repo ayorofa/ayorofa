@@ -166,7 +166,7 @@ export default function BesoinCard({ b, me }) {
 
       <div style={{ display: 'flex', gap: 8, marginTop: 12, flexWrap: 'wrap', alignItems: 'center' }}>
         <button className="btn btn-sm" style={liked ? {} : ghost} onClick={toggleLike}>👍 {likes}</button>
-        <button className="btn btn-sm" style={ghost} onClick={openC}>💬 {me ? 'Commentaires' : 'Voir les commentaires'}</button>
+        <button className="btn btn-sm" style={ghost} onClick={openC}>💬 Commenter</button>
         {me && b.auteur !== me && <button className="btn btn-sm" onClick={interesse}>Ça m’intéresse</button>}
         {me && b.auteur !== me && <a className="btn btn-sm" style={ghost} href={contactHref} target={b.contact ? '_blank' : undefined} rel="noopener">Contacter</a>}
         {!me && <Link href="/inscription" className="btn btn-sm">Répondre — créer un compte</Link>}
