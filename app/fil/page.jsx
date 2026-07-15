@@ -11,6 +11,8 @@ import { VILLES } from '@/data/villes';
 const FILTRES = [
   { v: '', label: 'Tout' },
   { v: 'post', label: 'Publications' },
+  { v: 'evenement', label: 'Événements' },
+  { v: 'promotion', label: 'Promos' },
   { v: 'demande', label: 'Demandes' },
   { v: 'offre_emploi', label: "Offres d'emploi" },
   { v: 'recherche', label: 'Chercheurs' },

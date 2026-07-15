@@ -527,3 +527,21 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .pf-add{aspect-ratio:1;border:2px dashed var(--line);border-radius:11px;display:flex;align-items:center;
   justify-content:center;font-size:2rem;color:var(--muted);cursor:pointer}
 .pf-add:hover{border-color:var(--gold);color:var(--gold-d)}
+
+/* ==================== RECHERCHE INTELLIGENTE (Lot 3) ==================== */
+.r-boite{position:relative;margin-top:14px}
+.r-form{display:flex;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:15px;padding:6px}
+.r-form input{flex:1;border:none;outline:none;padding:12px 13px;font-size:16px;font-family:inherit;border-radius:10px;min-width:0}
+.r-form:focus-within{border-color:var(--gold);box-shadow:0 6px 24px rgba(201,162,75,.18)}
+.r-sugg{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:50;background:#fff;
+  border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 44px rgba(0,0,0,.16);overflow:hidden}
+.r-s{display:flex;gap:10px;align-items:center;width:100%;text-align:left;background:none;border:none;
+  padding:12px 14px;font-size:.93rem;cursor:pointer;color:var(--text);font-family:inherit;min-height:48px}
+.r-s:hover{background:#FBF6EA}
+.r-s+.r-s{border-top:1px solid #F1EADA}
+.r-ic{width:28px;text-align:center}
+.r-titre{font-weight:800;font-size:.85rem;color:var(--muted);margin:0 0 8px;text-transform:uppercase;letter-spacing:.06em}
+.tag{color:var(--gold-d);font-weight:700}
+.tag:hover{text-decoration:underline}
+.mention{color:#24557a;font-weight:700}
+.lien-ext{color:#24557a;text-decoration:underline;word-break:break-all}

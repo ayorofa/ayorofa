@@ -11,6 +11,8 @@ const TYPES = [
   { v: 'demande', label: '🔨 Demande de prestation' },
   { v: 'offre_emploi', label: "💼 Offre d'emploi" },
   { v: 'recherche', label: "🙋 Recherche d'emploi" },
+  { v: 'evenement', label: '📅 Événement' },
+  { v: 'promotion', label: '🏷 Promotion' },
 ];
 const WA = '2250749074082';
 const waLink = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(
@@ -112,7 +114,10 @@ export default function Publier() {
           </>
         ) : (
           <>
-            <label className="full">Titre<input name="titre" value={f.titre} onChange={on} required placeholder="Ex. Recherche maçon pour dalle 40m²" /></label>
+            <label className="full">Titre<input name="titre" value={f.titre} onChange={on} required
+              placeholder={f.type === 'evenement' ? 'Ex. Portes ouvertes atelier couture — samedi 15h' :
+                f.type === 'promotion' ? 'Ex. −20% sur la pose de carrelage ce mois-ci' :
+                'Ex. Recherche maçon pour dalle 40m²'} /></label>
             <label>Métier / domaine
               <select name="metier" value={f.metier} onChange={on} required><option value="">Choisir…</option>{METIERS.map((m) => <option key={m.slug} value={m.slug}>{m.name}</option>)}</select>
             </label>

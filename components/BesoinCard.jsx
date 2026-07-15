@@ -8,6 +8,7 @@ import Avatar from '@/components/Avatar';
 import BadgeVerifie from '@/components/BadgeVerifie';
 import Signaler from '@/components/Signaler';
 import MediaView from '@/components/MediaView';
+import TexteRiche from '@/components/TexteRiche';
 import BadgesPro from '@/components/BadgesPro';
 import EmojiPicker from '@/components/EmojiPicker';
 
@@ -294,8 +295,8 @@ export default function BesoinCard({ b, me }) {
           {b.type !== 'post' && <h3 style={{ margin: '10px 0 4px' }}>{post.titre}</h3>}
           {b.source && <p className="muted sm" style={{ marginTop: 2 }}>Repéré par Ayôrôfa · {b.source}</p>}
           {b.type === 'post'
-            ? <p className="post-texte">{post.description || post.titre}</p>
-            : (post.description && <p style={{ marginTop: 6 }}>{post.description}</p>)}
+            ? <p className="post-texte"><TexteRiche texte={post.description || post.titre} /></p>
+            : (post.description && <p style={{ marginTop: 6 }}><TexteRiche texte={post.description} /></p>)}
           <MediaView url={b.media} type={b.media_type} />
           {b.lien && <p style={{ marginTop: 6 }}><a href={b.lien} target="_blank" rel="noopener">Voir l’annonce d’origine ↗</a></p>}
         </>
@@ -313,6 +314,11 @@ export default function BesoinCard({ b, me }) {
           {pickPost && <EmojiPicker actif={rx.mine} onPick={reagirPost} />}
         </span>
         <button className="btn btn-sm" style={ghost} onClick={openC}>💬 Commenter</button>
+        <button className="btn btn-sm" style={ghost} type="button" onClick={async () => {
+          const url = `${window.location.origin}/annonce/${b.id}`;
+          if (navigator.share) { try { await navigator.share({ title: post.titre, url }); } catch (e) {} }
+          else { try { await navigator.clipboard.writeText(url); alert('Lien copié ✓'); } catch (e) {} }
+        }}>↗ Partager</button>
         {me && b.auteur !== me && <button className="btn btn-sm" onClick={interesse}>Ça m’intéresse</button>}
         {me && b.auteur !== me && <a className="btn btn-sm" style={ghost} href={contactHref} target={b.contact ? '_blank' : undefined} rel="noopener">Contacter</a>}
         {!me && <Link href="/inscription" className="btn btn-sm">Répondre — créer un compte</Link>}
