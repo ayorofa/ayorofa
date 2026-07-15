@@ -1,9 +1,11 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 import Avatar from '@/components/Avatar';
 import BadgeVerifie from '@/components/BadgeVerifie';
+import BadgesPro from '@/components/BadgesPro';
 import Presence from '@/components/Presence';
 import BoutonReseau from '@/components/BoutonReseau';
 import { METIERS, metierBySlug } from '@/data/metiers';
@@ -17,15 +19,16 @@ const TYPES = [
 ];
 const TYPE_LABEL = { entreprise: 'Entreprise', particulier: 'Particulier', chercheur: "Chercheur d'emploi" };
 
-export default function Membres() {
+function Membres() {
+  const sp = useSearchParams();
   const [me, setMe] = useState(null);
   const [mesInterets, setMesInterets] = useState([]);
   const [membres, setMembres] = useState([]);
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState('');
   const [ville, setVille] = useState('');
-  const [metier, setMetier] = useState('');
-  const [q, setQ] = useState('');
+  const [metier, setMetier] = useState(sp.get('metier') || '');
+  const [q, setQ] = useState(sp.get('q') || '');
   const [enLigneSeul, setEnLigneSeul] = useState(false);
 
   useEffect(() => {
@@ -38,7 +41,7 @@ export default function Membres() {
         setMesInterets((moi && moi.interets) || []);
       }
       const { data } = await supabase.from('profiles')
-        .select('id,nom,type,ville,interets,avatar_url,verifie,bio,derniere_activite')
+        .select('id,nom,type,ville,interets,avatar_url,verifie,badges,bio,derniere_activite')
         .eq('banni', false)
         .order('derniere_activite', { ascending: false, nullsFirst: false })
         .limit(100);
@@ -72,7 +75,10 @@ export default function Membres() {
   return (
     <main className="sec"><div className="wrap" style={{ maxWidth: 760 }}>
       <p className="eyebrow">La communauté</p>
-      <h1>Membres</h1>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+        <h1 style={{ marginRight: 'auto' }}>Membres</h1>
+        {me && <Link className="btn btn-sm btn-ghost" href="/favoris">★ Mes enregistrés</Link>}
+      </div>
       <p className="muted">
         {membres.length} membre(s) · <strong style={{ color: 'var(--ok)' }}>{enLigneCount} en ligne</strong>
       </p>
@@ -113,6 +119,7 @@ export default function Membres() {
                 <div className="post-n">
                   <Link href={`/profil/${m.id}`}><strong>{m.nom || 'Utilisateur'}</strong></Link>
                   {m.verifie && <BadgeVerifie size="sm" />}
+              <BadgesPro badges={m.badges} mini />
                 </div>
                 <p className="muted sm" style={{ margin: '2px 0' }}>
                   {TYPE_LABEL[m.type] || m.type}{m.ville ? ` · ${m.ville}` : ''}
@@ -138,5 +145,14 @@ export default function Membres() {
         </div>
       )}
     </div></main>
+  );
+}
+
+
+export default function Page() {
+  return (
+    <Suspense fallback={<main className="sec"><div className="wrap"><p className="muted">Chargement…</p></div></main>}>
+      <Membres />
+    </Suspense>
   );
 }

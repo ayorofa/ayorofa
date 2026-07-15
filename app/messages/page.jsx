@@ -11,6 +11,11 @@ import Avatar from '@/components/Avatar';
 function MessagesInner() {
   const router = useRouter();
   const sp = useSearchParams();
+  useEffect(() => {
+    if (sp.get('sujet') === 'devis') {
+      setText('Bonjour 👋 Je souhaite un devis pour : ');
+    }
+  }, [sp]);
   const [me, setMe] = useState(null);
   const [convs, setConvs] = useState([]);
   const [active, setActive] = useState(null);

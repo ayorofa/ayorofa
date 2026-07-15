@@ -9,6 +9,8 @@ import BadgeVerifie from '@/components/BadgeVerifie';
 import Presence from '@/components/Presence';
 import BoutonReseau from '@/components/BoutonReseau';
 import BesoinCard from '@/components/BesoinCard';
+import BadgesPro from '@/components/BadgesPro';
+import Portfolio from '@/components/Portfolio';
 import { uploadMedia } from '@/lib/media';
 
 const TYPE_LABEL = { entreprise: 'Entreprise', particulier: 'Particulier', chercheur: "Chercheur d'emploi" };
@@ -27,6 +29,30 @@ export default function Profil({ params }) {
   // liste (abonnés / abonnements / réseau)
   const [liste, setListe] = useState(null);      // null | 'reseau' | 'abonnes' | 'abonnements'
   const [banniereEnvoi, setBanniereEnvoi] = useState(false);
+  const [vues, setVues] = useState(null);
+  const [fav, setFav] = useState(false);
+
+  const partager = async () => {
+    const url = window.location.origin + '/profil/' + id;
+    const titre = (p && p.nom ? p.nom + ' — ' : '') + 'Ayôrôfa Connect';
+    try {
+      if (navigator.share) { await navigator.share({ title: titre, url }); return; }
+      throw new Error('no share');
+    } catch (e) {
+      try { await navigator.clipboard.writeText(url); alert('Lien du profil copié ✓'); } catch (e2) {}
+    }
+  };
+
+  const basculerFavori = async () => {
+    if (!me) { window.location.href = '/inscription'; return; }
+    if (fav) {
+      await supabase.from('favoris').delete().eq('proprietaire', me).eq('cible', id);
+      setFav(false);
+    } else {
+      await supabase.from('favoris').insert({ proprietaire: me, cible: id });
+      setFav(true);
+    }
+  };
 
   const changerBanniere = async (e) => {
     const file = e.target.files && e.target.files[0];
@@ -67,6 +93,9 @@ export default function Profil({ params }) {
       .eq('auteur', id).order('created_at', { ascending: false }).limit(3);
     setPosts(bs || []);
 
+    const { data: vp } = await supabase.from('vues_profils').select('n').eq('cible', id).maybeSingle();
+    setVues(vp ? vp.n : 0);
+
     const { data: av } = await supabase.from('avis').select('*').eq('cible', id)
       .order('created_at', { ascending: false }).limit(20);
     const ids = [...new Set((av || []).map((a) => a.auteur))];
@@ -83,6 +112,12 @@ export default function Profil({ params }) {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
       setMe(user ? user.id : null);
+      supabase.rpc('voir_profil', { cible: id }).then(() => {});
+      if (user) {
+        const { data: fv } = await supabase.from('favoris').select('id')
+          .eq('proprietaire', user.id).eq('cible', id).maybeSingle();
+        setFav(!!fv);
+      }
       await load();
       setLoading(false);
     })();
@@ -157,12 +192,23 @@ export default function Profil({ params }) {
             <h1 style={{ margin: 0, fontSize: '1.45rem' }}>{p.nom || 'Utilisateur'}</h1>
             {p.verifie && <BadgeVerifie size="sm" />}
           </div>
+          {(p.badges || []).length > 0 && <div style={{ marginTop: 6 }}><BadgesPro badges={p.badges} /></div>}
           {p.bio && <p className="profil-titre">{p.bio}</p>}
+          {(p.entreprise || p.experience_annees) && (
+            <p className="muted sm" style={{ margin: '3px 0 0' }}>
+              {p.entreprise || ''}{p.entreprise && p.experience_annees ? ' · ' : ''}
+              {p.experience_annees ? `${p.experience_annees} ans d’expérience` : ''}
+            </p>
+          )}
           <p className="muted sm" style={{ margin: '4px 0 0' }}>
             {TYPE_LABEL[p.type] || p.type}{p.ville ? ` · ${p.ville}, Côte d’Ivoire` : ' · Côte d’Ivoire'}
             {moy ? ` · ★ ${moy} (${avis.length})` : ''}
           </p>
           <Presence date={p.derniere_activite} />
+          <p className="muted sm" style={{ margin: '4px 0 0' }}>
+            👁 {vues === null ? '—' : vues} vue{vues > 1 ? 's' : ''} du profil
+            {p.disponibilite ? <span className={'dispo' + (p.disponibilite === 'Disponible' ? ' on' : '')}> · {p.disponibilite}</span> : null}
+          </p>
 
           {/* Statistiques cliquables */}
           <div className="stats-bar">
@@ -182,12 +228,23 @@ export default function Profil({ params }) {
 
           <div style={{ display: 'flex', gap: 8, marginTop: 14, flexWrap: 'wrap' }}>
             {me === id ? (
-              <Link className="btn" href="/espace">Modifier mon profil</Link>
+              <>
+                <Link className="btn" href="/profil/modifier">✏️ Modifier mon profil</Link>
+                <Link className="btn btn-ghost" href="/espace">Réglages du compte</Link>
+              </>
             ) : (
               <>
                 <BoutonReseau cibleId={id} me={me} />
-                {me && <a className="btn btn-ghost" href={`/messages?to=${id}`}>Message</a>}
+                {me && <a className="btn btn-ghost" href={`/messages?to=${id}`}>💬 Message</a>}
+                {me && <a className="btn btn-ghost" href={`/messages?to=${id}&sujet=devis`}>📋 Devis</a>}
+                {p.whatsapp && <a className="btn btn-ghost" href={`https://wa.me/${String(p.whatsapp).replace(/\D/g, '')}`} target="_blank" rel="noopener">WhatsApp</a>}
               </>
+            )}
+            <button className="btn btn-ghost" type="button" onClick={partager}>↗ Partager</button>
+            {me && me !== id && (
+              <button className="btn btn-ghost" type="button" onClick={basculerFavori}>
+                {fav ? '★ Enregistré' : '☆ Enregistrer'}
+              </button>
             )}
           </div>
         </div>
@@ -200,6 +257,46 @@ export default function Profil({ params }) {
           <p style={{ margin: '8px 0 0' }}>{p.bio}</p>
         </div>
       )}
+
+      {/* ── Compétences ── */}
+      {(p.competences || []).length > 0 && (
+        <div className="card" style={{ marginTop: 14 }}>
+          <h2 className="profil-h2">Compétences</h2>
+          <div className="chips" style={{ marginTop: 10 }}>
+            {p.competences.map((c) => <span key={c} className="chip on" style={{ cursor: 'default' }}>{c}</span>)}
+          </div>
+        </div>
+      )}
+
+      {/* ── Informations professionnelles ── */}
+      {(p.horaires || p.zone || (p.langues || []).length > 0 || (p.moyens_paiement || []).length > 0 || p.telephone || p.site || p.facebook || p.tiktok) && (
+        <div className="card" style={{ marginTop: 14 }}>
+          <h2 className="profil-h2">Informations professionnelles</h2>
+          <div className="infos-pro">
+            {p.zone && <p><strong>Zone d’intervention :</strong> {p.zone}</p>}
+            {p.horaires && <p><strong>Horaires :</strong> {p.horaires}</p>}
+            {(p.langues || []).length > 0 && <p><strong>Langues :</strong> {p.langues.join(', ')}</p>}
+            {(p.moyens_paiement || []).length > 0 && <p><strong>Paiement :</strong> {p.moyens_paiement.join(' · ')}</p>}
+            {p.telephone && <p><strong>Téléphone :</strong> <a href={`tel:${p.telephone}`}>{p.telephone}</a></p>}
+            {p.site && <p><strong>Site :</strong> <a href={p.site.startsWith('http') ? p.site : `https://${p.site}`} target="_blank" rel="noopener">{p.site}</a></p>}
+            {p.facebook && <p><strong>Facebook :</strong> <a href={p.facebook.startsWith('http') ? p.facebook : `https://${p.facebook}`} target="_blank" rel="noopener">{p.facebook.replace('https://', '')}</a></p>}
+            {p.tiktok && <p><strong>TikTok :</strong> {p.tiktok}</p>}
+          </div>
+        </div>
+      )}
+
+      {/* ── Diplômes & certifications ── */}
+      {(p.diplomes || []).length > 0 && (
+        <div className="card" style={{ marginTop: 14 }}>
+          <h2 className="profil-h2">Diplômes & certifications</h2>
+          <ul className="diplomes">
+            {p.diplomes.map((d) => <li key={d}>🎓 {d}</li>)}
+          </ul>
+        </div>
+      )}
+
+      {/* ── Portfolio ── */}
+      <Portfolio proprietaire={id} me={me} />
 
       {/* ── Centres d'intérêt ── */}
       {interets.length > 0 && (

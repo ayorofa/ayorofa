@@ -8,6 +8,7 @@ import Avatar from '@/components/Avatar';
 import BadgeVerifie from '@/components/BadgeVerifie';
 import Signaler from '@/components/Signaler';
 import MediaView from '@/components/MediaView';
+import BadgesPro from '@/components/BadgesPro';
 import EmojiPicker from '@/components/EmojiPicker';
 
 const ghost = { background: 'transparent', border: '1px solid var(--line)', color: 'var(--text)' };
@@ -17,7 +18,7 @@ export default function BesoinCard({ b, me }) {
   const m = metierBySlug(b.metier);
   const [post, setPost] = useState(b);
   const [supprime, setSupprime] = useState(false);
-  const [auteur, setAuteur] = useState({ nom: 'Utilisateur', avatar_url: null, verifie: false });
+  const [auteur, setAuteur] = useState({ nom: 'Utilisateur', avatar_url: null, verifie: false, badges: [] });
   // réactions du post
   const [rx, setRx] = useState({ total: 0, mine: null, top: [] });
   const [pickPost, setPickPost] = useState(false);
@@ -56,8 +57,8 @@ export default function BesoinCard({ b, me }) {
     if (!supabase) return;
     (async () => {
       await loadReactions();
-      const { data: pa } = await supabase.from('profiles').select('nom,avatar_url,verifie').eq('id', b.auteur).maybeSingle();
-      if (pa) setAuteur({ nom: pa.nom || 'Utilisateur', avatar_url: pa.avatar_url, verifie: !!pa.verifie });
+      const { data: pa } = await supabase.from('profiles').select('nom,avatar_url,verifie,badges').eq('id', b.auteur).maybeSingle();
+      if (pa) setAuteur({ nom: pa.nom || 'Utilisateur', avatar_url: pa.avatar_url, verifie: !!pa.verifie, badges: pa.badges || [] });
     })();
   }, [b.id, me]);
 
@@ -254,6 +255,7 @@ export default function BesoinCard({ b, me }) {
           <div className="post-n">
             {b.contact ? <strong>{auteur.nom}</strong> : <Link href={`/profil/${b.auteur}`}><strong>{auteur.nom}</strong></Link>}
             {auteur.verifie && <BadgeVerifie size="sm" />}
+            <BadgesPro badges={auteur.badges} mini />
           </div>
           <p className="muted sm" style={{ margin: 0 }}>
             {m ? m.name : b.metier}{b.ville ? ` · ${b.ville}` : ''} · {ilya(b.created_at)}
