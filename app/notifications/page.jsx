@@ -12,6 +12,9 @@ const TEXTE = {
   reaction: 'a réagi à votre annonce 👍',
   commentaire: 'a commenté votre annonce 💬',
   reponse: 'a répondu à votre commentaire ↩️',
+  devis_demande: 'vous a adressé une demande de devis 📋',
+  devis_recu: 'vous a envoyé un devis 💰',
+  devis_accepte: 'a accepté votre devis 🎉',
   abonnement: 's’est abonné à votre profil',
   interet: 'est intéressé par votre annonce',
 };

@@ -236,7 +236,7 @@ export default function Profil({ params }) {
               <>
                 <BoutonReseau cibleId={id} me={me} />
                 {me && <a className="btn btn-ghost" href={`/messages?to=${id}`}>💬 Message</a>}
-                {me && <a className="btn btn-ghost" href={`/messages?to=${id}&sujet=devis`}>📋 Devis</a>}
+                {me && <Link className="btn btn-ghost" href={`/devis/nouvelle?pour=${id}`}>📋 Devis</Link>}
                 {p.whatsapp && <a className="btn btn-ghost" href={`https://wa.me/${String(p.whatsapp).replace(/\D/g, '')}`} target="_blank" rel="noopener">WhatsApp</a>}
               </>
             )}

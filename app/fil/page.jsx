@@ -82,6 +82,13 @@ export default function Accueil() {
 
       <main className="sec">
         <div className="wrap feed">
+          {uid && (
+            <div className="acces-rapide">
+              <Link href="/tableau-de-bord">📊 Tableau de bord</Link>
+              <Link href="/devis">📋 Devis</Link>
+              <Link href="/favoris">★ Enregistrés</Link>
+            </div>
+          )}
           {uid ? (
             <div className="composer card">
               <div className="composer-top">
