@@ -86,6 +86,7 @@ export default function Accueil() {
             <div className="acces-rapide">
               <Link href="/tableau-de-bord">📊 Tableau de bord</Link>
               <Link href="/devis">📋 Devis</Link>
+              <Link href="/assistant">✨ Assistant</Link>
               <Link href="/favoris">★ Enregistrés</Link>
             </div>
           )}

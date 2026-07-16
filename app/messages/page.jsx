@@ -154,6 +154,23 @@ function MessagesInner() {
   const chunksRef = useRef([]);
   const chronoRef = useRef(null);
   const [filtre, setFiltre] = useState('');
+  const [iaBusy, setIaBusy] = useState(false);
+
+  const suggererReponse = async () => {
+    const dernierRecu = [...activeMsgs].reverse().find((m) => m.expediteur !== me && m.contenu);
+    if (!dernierRecu) return;
+    setIaBusy(true); setErrMedia('');
+    const { data: { session } } = await supabase.auth.getSession();
+    const r = await fetch('/api/ia', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ action: 'reponse', contexte: dernierRecu.contenu }),
+    });
+    const j = await r.json();
+    setIaBusy(false);
+    if (r.ok && j.texte) setText(j.texte);
+    else if (r.status !== 503) setErrMedia(j.error || '');
+  };
   const [msgRx, setMsgRx] = useState({});     // réactions par message
   const [pickMsg, setPickMsg] = useState(null);
 
@@ -319,6 +336,8 @@ function MessagesInner() {
                   </label>
                   <button className="chat-attach" type="button" aria-label="Enregistrer un message vocal"
                     onClick={demarrerEnreg}>🎙</button>
+                  <button className="chat-attach" type="button" aria-label="Suggérer une réponse avec l’assistant"
+                    onClick={suggererReponse} disabled={iaBusy}>{iaBusy ? '…' : '✨'}</button>
                   <input value={text} onChange={(e) => { setText(e.target.value); signalerTape(); }} placeholder="Écrire un message…" />
                   <button className="btn" type="submit" disabled={envoi}>{envoi ? '…' : 'Envoyer'}</button>
                 </form>

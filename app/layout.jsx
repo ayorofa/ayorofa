@@ -24,6 +24,16 @@ export const metadata = {
   },
   description: 'Ayôrôfa Connect met en relation entreprises, particuliers et chercheurs d’emploi : besoins, offres et services en Côte d’Ivoire, en temps réel.',
   manifest: '/manifest.json',
+  openGraph: {
+    siteName: 'Ayôrôfa Connect',
+    images: [{ url: '/og.png', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Ayôrôfa Connect — Le réseau professionnel de la Côte d’Ivoire',
+    description: 'Un besoin d’un côté. Un talent de l’autre.',
+    images: ['/og.png'],
+  },
   appleWebApp: {
     capable: true,
     title: 'Ayôrôfa Connect',
@@ -40,8 +50,9 @@ export default function RootLayout({ children }) {
     <html lang="fr">
       <body>
         <InstallApp />
+        <a href="#contenu" className="skip-lien">Aller au contenu principal</a>
         <Header />
-        {children}
+        <div id="contenu">{children}</div>
         <Footer />
         <BottomNav />
         <RegisterSW />

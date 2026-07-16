@@ -601,3 +601,46 @@ html[data-theme="sombre"] .r-s:hover,html[data-theme="sombre"] .menu-pop button:
 html[data-theme="sombre"] a{color:inherit}
 html[data-theme="sombre"] .tag{color:#E7C879}
 html[data-theme="sombre"] .btn-ghost{color:#E8E1D0;border-color:#3A3226}
+
+/* ==================== ACCESSIBILITÉ (WCAG) ==================== */
+.skip-lien{position:absolute;left:-9999px;top:0;z-index:200;background:var(--gold);color:var(--ink);
+  font-weight:800;padding:12px 18px;border-radius:0 0 12px 0}
+.skip-lien:focus{left:0}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+.ia-resultat{white-space:pre-wrap;line-height:1.6;margin:10px 0 12px;font-size:.95rem}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
+html{font-size:100%}
+
+/* ==================== ACCESSIBILITÉ (WCAG) ==================== */
+/* Navigation clavier : focus toujours visible */
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
+.btn:focus-visible,.chip:focus-visible,.onglet:focus-visible{outline-color:#161310}
+html[data-theme="sombre"] :focus-visible{outline-color:#E7C879}
+/* Lien d'évitement (lecteurs d'écran & clavier) */
+.skip-lien{position:absolute;left:-9999px;top:0;z-index:200;background:var(--gold);color:#161310;
+  font-weight:800;padding:12px 18px;border-radius:0 0 12px 0}
+.skip-lien:focus{left:0}
+/* Mouvements réduits respectés */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;
+    transition-duration:.01ms !important;scroll-behavior:auto !important}
+}
+/* Contraste renforcé des textes secondaires */
+.muted{color:#5C5546}
+html[data-theme="sombre"] .muted{color:#B4A98F}
+/* Tailles tactiles minimales */
+button,.btn,a.btn,.chip,.onglet{min-height:44px}
+input,select,textarea{min-height:44px}
+
+/* ==================== ACCESSIBILITÉ (WCAG) ==================== */
+.skip,.skip-lien{position:absolute;left:-9999px;top:0;z-index:200;background:var(--gold);color:var(--ink);
+  font-weight:800;padding:12px 18px;border-radius:0 0 12px 0}
+.skip:focus,.skip-lien:focus{left:0}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;scroll-behavior:auto!important}
+}

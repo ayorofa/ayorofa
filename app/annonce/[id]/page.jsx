@@ -1,41 +1,30 @@
-'use client';
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { supabase } from '@/lib/supabaseClient';
-import BesoinCard from '@/components/BesoinCard';
+import { createClient } from '@supabase/supabase-js';
+import AnnonceClient from './AnnonceClient';
 
-export default function Annonce({ params }) {
-  const [b, setB] = useState(null);
-  const [me, setMe] = useState(null);
-  const [loading, setLoading] = useState(true);
+// Métadonnées côté serveur : chaque annonce partagée a son titre et sa description
+// (aperçus riches sur WhatsApp/Facebook + indexation Google).
+export async function generateMetadata({ params }) {
+  try {
+    const sb = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+    const { data: b } = await sb.from('besoins')
+      .select('titre,description,media,media_type').eq('id', params.id).maybeSingle();
+    if (!b) return { title: 'Annonce — Ayôrôfa Connect' };
+    const desc = (b.description || b.titre || '').slice(0, 155);
+    return {
+      title: `${b.titre} — Ayôrôfa Connect`,
+      description: desc,
+      openGraph: {
+        title: b.titre,
+        description: desc,
+        ...(b.media && b.media_type === 'image' ? { images: [b.media] } : {}),
+      },
+      twitter: { card: b.media && b.media_type === 'image' ? 'summary_large_image' : 'summary' },
+    };
+  } catch (e) {
+    return { title: 'Annonce — Ayôrôfa Connect' };
+  }
+}
 
-  useEffect(() => {
-    if (!supabase) { setLoading(false); return; }
-    (async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setMe(user ? user.id : null);
-      const { data } = await supabase.from('besoins').select('*').eq('id', params.id).maybeSingle();
-      setB(data);
-      setLoading(false);
-    })();
-  }, [params.id]);
-
-  return (
-    <main className="sec"><div className="wrap" style={{ maxWidth: 680 }}>
-      {loading ? <p className="muted">Chargement…</p> :
-       b ? (
-        <>
-          <BesoinCard b={b} me={me} />
-          <p style={{ marginTop: 16 }}>
-            <Link className="btn btn-ghost btn-sm" href={me ? '/fil' : '/'}>← Voir toutes les annonces</Link>
-          </p>
-        </>
-       ) : (
-        <div className="card">
-          <p style={{ margin: 0 }}>Cette annonce n’existe plus ou a été retirée.</p>
-          <Link className="btn btn-sm" href="/" style={{ marginTop: 10 }}>Retour à l’accueil</Link>
-        </div>
-       )}
-    </div></main>
-  );
+export default function Page({ params }) {
+  return <AnnonceClient id={params.id} />;
 }
