@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Logo from '@/components/Logo';
 import UserNav from '@/components/UserNav';
 import IconMessages from '@/components/IconMessages';
+import BoutonTheme from '@/components/BoutonTheme';
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -26,6 +27,7 @@ export default function Header() {
         </nav>
 
         <div className="hdr-actions">
+          <BoutonTheme />
           <IconMessages />
           <button className="burger" aria-label="Ouvrir le menu" aria-expanded={open} onClick={() => setOpen(!open)}>
           <span /><span /><span />

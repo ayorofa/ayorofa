@@ -559,3 +559,45 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .dash-n{font-family:Georgia,serif;font-size:1.7rem;font-weight:700;color:var(--gold-d)}
 .dash-l{font-size:.74rem;color:var(--muted);font-weight:600;margin-top:2px}
 a .dash-carte:hover{border-color:var(--gold)}
+
+/* ==================== MESSAGERIE PRO (Lot 5) ==================== */
+.tape{display:block;font-size:.72rem;font-weight:600;color:var(--gold-d);font-style:normal;animation:tapeclig 1.2s ease infinite}
+@keyframes tapeclig{0%,100%{opacity:.55}50%{opacity:1}}
+.ticks{font-size:.72rem;letter-spacing:-1px;opacity:.75}
+.ticks.lu{color:#E7C879;opacity:1;font-weight:800}
+.msg-audio{display:block;width:230px;max-width:100%;margin:2px 0 6px;height:40px}
+.msg-doc{display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.08);border-radius:10px;
+  padding:9px 12px;margin:2px 0 6px;font-weight:700;font-size:.85rem;color:inherit;text-decoration:underline;word-break:break-all}
+.bubble.me .msg-doc{background:rgba(255,255,255,.16)}
+.conv-filtre{padding:8px}
+.conv-filtre input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:11px;font-size:16px;font-family:inherit;background:var(--carte,#fff);color:inherit}
+.rep-rapides{display:flex;gap:8px;padding:6px 12px 0;overflow-x:auto}
+.rep-rapides button{flex:0 0 auto;background:var(--carte,#fff);border:1px solid var(--line);border-radius:20px;
+  padding:8px 13px;font-size:.82rem;font-weight:600;cursor:pointer;color:inherit;min-height:38px;font-family:inherit}
+.rep-rapides button:hover{border-color:var(--gold)}
+.chat-form.enreg{display:flex;align-items:center;gap:10px;padding:10px 12px}
+.enreg-pt{width:12px;height:12px;border-radius:50%;background:#D5382B;animation:tapeclig .9s ease infinite}
+.enreg-t{font-weight:800;font-variant-numeric:tabular-nums;margin-right:auto}
+.btn-theme{background:none;border:1px solid rgba(231,200,121,.4);color:#E7C879;border-radius:11px;
+  width:40px;height:40px;font-size:1.05rem;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.btn-theme:hover{border-color:var(--gold)}
+
+/* ==================== MODE SOMBRE 🌙 ==================== */
+html[data-theme="sombre"]{--carte:#1E1912}
+html[data-theme="sombre"] body{background:#131009;color:#E8E1D0}
+html[data-theme="sombre"] .sec,html[data-theme="sombre"] main{background:transparent}
+html[data-theme="sombre"] :is(.card,.composer,.v-q,.r-form,.r-sugg,.menu-pop,.emoji-pop,.onglet,
+  .chip,.v-cat,.acces-rapide a,.stats-bar button,.stats-bar .stat-fix,.chat-list,.chat-thread,
+  .conv,.media-chip,.rx-chip,.dash-carte,.devis-ligne){background:#1E1912;border-color:#3A3226;color:#E8E1D0}
+html[data-theme="sombre"] :is(h1,h2,h3,strong){color:#F2ECDD}
+html[data-theme="sombre"] :is(.muted,.sm.muted,.dash-l,.v-stat-l){color:#A79C86}
+html[data-theme="sombre"] :is(input,textarea,select){background:#262016;color:#E8E1D0;border-color:#3A3226}
+html[data-theme="sombre"] .bubble{background:#262016;color:#E8E1D0}
+html[data-theme="sombre"] .bubble.me{background:#3A2F1D;color:#F2ECDD}
+html[data-theme="sombre"] .chip.on{background:rgba(201,162,75,.25);color:#E7C879;border-color:var(--gold)}
+html[data-theme="sombre"] .onglet.on{background:var(--gold);color:#161310}
+html[data-theme="sombre"] :is(.v-alt,.chat-msgs){background:#191510}
+html[data-theme="sombre"] .r-s:hover,html[data-theme="sombre"] .menu-pop button:hover{background:#262016}
+html[data-theme="sombre"] a{color:inherit}
+html[data-theme="sombre"] .tag{color:#E7C879}
+html[data-theme="sombre"] .btn-ghost{color:#E8E1D0;border-color:#3A3226}
