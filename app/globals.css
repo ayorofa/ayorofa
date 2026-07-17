@@ -644,3 +644,24 @@ input,select,textarea{min-height:44px}
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
     transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* ==================== MONÉTISATION & EMPLOI (Lot 6) ==================== */
+.badge.boost{background:linear-gradient(90deg,#C9A24B,#E7C879);color:#161310;font-weight:800}
+.boost-ligne{display:flex;align-items:center;gap:8px;background:var(--carte,#fff);border:1px solid var(--line);
+  border-radius:11px;padding:10px 12px}
+.cand-form{background:var(--carte,#fff);border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:10px}
+.cand-form textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px;font-family:inherit;font-size:15px;background:inherit;color:inherit}
+
+/* Reçu imprimable */
+.recu{max-width:600px;margin:0 auto}
+.recu-tete{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:2px solid var(--gold);padding-bottom:14px;margin-bottom:16px}
+.recu-marque{font-family:Georgia,serif;font-size:1.4rem;font-weight:700;color:var(--ink)}
+.recu-tr{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.recu-total{display:flex;justify-content:space-between;padding:14px 0;font-size:1.2rem;font-weight:800;color:var(--gold-d)}
+.recu-actions{margin-top:20px;display:flex;gap:10px}
+@media print{
+  header,footer,.bottom-nav,.recu-actions,.skip,.skip-lien,.acces-rapide{display:none!important}
+  body{background:#fff!important}
+  .recu{max-width:100%}
+  .sec{padding:0!important}
+}

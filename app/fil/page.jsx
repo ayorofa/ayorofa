@@ -46,7 +46,7 @@ export default function Accueil() {
       }
 
       const { data } = await supabase.from('besoins').select('*')
-        .order('created_at', { ascending: false }).limit(60);
+        .order('boost_jusqua', { ascending: false, nullsFirst: false }).order('created_at', { ascending: false }).limit(60);
       setItems(data || []);
       setLoading(false);
 
@@ -86,6 +86,7 @@ export default function Accueil() {
             <div className="acces-rapide">
               <Link href="/tableau-de-bord">📊 Tableau de bord</Link>
               <Link href="/devis">📋 Devis</Link>
+              <Link href="/candidatures">💼 Candidatures</Link>
               <Link href="/assistant">✨ Assistant</Link>
               <Link href="/favoris">★ Enregistrés</Link>
             </div>

@@ -15,6 +15,7 @@ const TEXTE = {
   devis_demande: 'vous a adressé une demande de devis 📋',
   devis_recu: 'vous a envoyé un devis 💰',
   devis_accepte: 'a accepté votre devis 🎉',
+  candidature: 'a postulé à votre offre 📩',
   abonnement: 's’est abonné à votre profil',
   interet: 'est intéressé par votre annonce',
 };

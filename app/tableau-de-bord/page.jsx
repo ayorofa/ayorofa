@@ -15,6 +15,7 @@ export default function TableauDeBord() {
   const [s, setS] = useState(null);
   const [graph, setGraph] = useState([]);
   const [global_, setGlobal] = useState(null);
+  const [boosts, setBoosts] = useState([]);
   // attribution badges
   const [email, setEmail] = useState('');
   const [choix, setChoix] = useState([]);
@@ -75,9 +76,24 @@ export default function TableauDeBord() {
           supabase.from('signalements').select('id', { count: 'exact', head: true }).eq('statut', 'nouveau'),
         ]);
         setGlobal({ membres: nm || 0, annonces: na || 0, devis: nd || 0, signalements: nsig || 0 });
+        const { data: bo } = await supabase.from('demandes_boost')
+          .select('id,besoin,membre,created_at,besoins(titre),profiles(nom)')
+          .eq('statut', 'en_attente').order('created_at', { ascending: true });
+        setBoosts(bo || []);
       }
     })();
   }, []);
+
+  const deciderBoost = async (d, action) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const r = await fetch('/api/admin/boost', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${session?.access_token}` },
+      body: JSON.stringify({ demande_id: d.id, action }),
+    });
+    if (r.ok) setBoosts((l) => l.filter((x) => x.id !== d.id));
+    else { const j = await r.json(); alert(j.error || 'Erreur'); }
+  };
 
   const attribuer = async (e) => {
     e.preventDefault();
@@ -130,7 +146,7 @@ export default function TableauDeBord() {
 
           <div className="card" style={{ marginTop: 14, background: '#FFFDF6' }}>
             <p style={{ margin: 0, fontSize: '.93rem' }}>
-              💡 <strong>Pour faire grimper ces chiffres :</strong> complétez votre <Link href="/profil/modifier"><strong>profil pro</strong></Link> (compétences,
+              🧾 <Link href="/factures"><strong>Mes reçus & factures</strong></Link> · abonnements et paiements.<br />💡 <strong>Pour faire grimper ces chiffres :</strong> complétez votre <Link href="/profil/modifier"><strong>profil pro</strong></Link> (compétences,
               portfolio, zone), publiez régulièrement, et répondez vite aux <Link href="/devis"><strong>demandes de devis</strong></Link>.
             </p>
           </div>
@@ -144,6 +160,26 @@ export default function TableauDeBord() {
                 <Carte n={global_.annonces} l="Annonces totales" />
                 <Carte n={global_.devis} l="Demandes de devis" />
                 <Carte n={global_.signalements} l="Signalements à traiter" href="/admin-moderation" />
+              </div>
+
+              <div className="card" style={{ marginTop: 14 }}>
+                <h3 style={{ margin: '0 0 8px', fontSize: '1rem' }}>
+                  🚀 Boosts à valider {boosts.length > 0 && <span className="onglet-n">{boosts.length}</span>}
+                </h3>
+                {boosts.length ? (
+                  <div style={{ display: 'grid', gap: 8 }}>
+                    {boosts.map((d) => (
+                      <div key={d.id} className="boost-ligne">
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <strong>{d.besoins?.titre || 'Annonce'}</strong>
+                          <p className="muted sm" style={{ margin: 0 }}>par {d.profiles?.nom || 'membre'} · réf. BOOST-{d.id.slice(0, 6).toUpperCase()}</p>
+                        </div>
+                        <button className="btn btn-sm" onClick={() => deciderBoost(d, 'valider')}>✓ Valider</button>
+                        <button className="btn btn-sm btn-ghost" onClick={() => deciderBoost(d, 'refuser')}>✕</button>
+                      </div>
+                    ))}
+                  </div>
+                ) : <p className="muted sm" style={{ margin: 0 }}>Aucune demande de boost en attente. Vérifiez le paiement Mobile Money (réf. BOOST-…) avant de valider.</p>}
               </div>
 
               <form className="card form" onSubmit={attribuer} style={{ marginTop: 14 }}>
