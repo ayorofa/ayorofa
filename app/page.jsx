@@ -8,6 +8,7 @@ export const metadata = {
   description:
     'Trouvez un professionnel vérifié, publiez votre besoin, recevez plusieurs devis. Le réseau des artisans, entreprises et chercheurs d’emploi de Côte d’Ivoire. Gratuit, en français, paiement Mobile Money.',
   alternates: { canonical: '/' },
+  verification: { google: '3Ho8g71uDp7GAgjZtXgYh7SGuuYdnZlA0DPTbs4Yp2I' },
   openGraph: {
     title: 'Ayôrôfa Connect — Le réseau professionnel de la Côte d’Ivoire',
     description: 'Un besoin d’un côté. Un talent de l’autre. La mise en relation, à l’ivoirienne.',
