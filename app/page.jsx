@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { metierBySlug } from '../data/metiers';
 import { PROS } from '../data/pros';
 import BadgeVerifie from '../components/BadgeVerifie';
