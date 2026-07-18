@@ -1,10 +1,7 @@
-import Link from 'next/link';
-import { metierBySlug } from '@/data/metiers';
-import { PROS } from '@/data/pros';
-import RedirectSiConnecte from '@/components/RedirectSiConnecte';
-import HeroRecherche from '@/components/HeroRecherche';
-import StatsDirect from '@/components/StatsDirect';
-import BadgeVerifie from '@/components/BadgeVerifie';
+import { metierBySlug } from '../data/metiers';
+import { PROS } from '../data/pros';
+import BadgeVerifie from '../components/BadgeVerifie';
+import { RedirectSiConnecte, HeroRecherche, StatsDirect } from './VitrineClient';
 
 export const metadata = {
   title: 'Ayôrôfa Connect — Le réseau professionnel de la Côte d’Ivoire',
