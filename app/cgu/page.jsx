@@ -51,45 +51,77 @@ export default function CGU() {
       </S>
 
       <S t="5. Rôle de la Plateforme">
-        <p>Ayôrôfa Connect est un <strong>outil de mise en relation</strong>. La Plateforme n’est pas partie aux
-        échanges, devis, contrats, prestations ou paiements conclus entre membres, et ne garantit ni la qualité des
-        prestations, ni la solvabilité, ni l’exactitude des profils. Le badge « Vérifié » atteste de vérifications
-        effectuées par nos soins à la date de délivrance, sans constituer une garantie. Il appartient à chaque membre
-        de faire preuve de vigilance avant de s’engager.</p>
+        <p>Ayôrôfa Connect est un <strong>service de mise en relation</strong>. La Plateforme fournit un espace
+        technique permettant aux membres de se trouver, de se présenter et d’échanger.</p>
+        <p>Ayôrôfa Connect <strong>n’est ni employeur, ni mandataire, ni agent, ni courtier, ni partie</strong> aux
+        contrats conclus entre membres. Elle n’intervient pas dans la négociation, la conclusion, l’exécution ou le
+        suivi des prestations, et ne représente aucun membre auprès d’un autre.</p>
       </S>
 
-      <S t="6. Services payants">
-        <p>Certaines options sont payantes (plans Pro et Vérifié, mises en avant, espaces sponsorisés). Les prix sont
-        indiqués en francs CFA sur la page Formules. Les abonnements sont valables pour la durée indiquée et ne sont
-        pas remboursables une fois le service activé, sauf disposition légale contraire. Ayôrôfa peut faire évoluer
-        ses offres et tarifs pour l’avenir.</p>
+      <S t="6. Contrats et paiements entre membres">
+        <p>Tout accord conclu à la suite d’une mise en relation — devis, prestation de service, vente, embauche ou
+        toute autre convention — est conclu <strong>directement et exclusivement entre les membres concernés</strong>,
+        qui en définissent seuls les termes, le prix, les délais et les modalités.</p>
+        <p>Les <strong>paiements s’effectuent directement entre les membres</strong>, par les moyens de leur choix
+        (Mobile Money, espèces, virement ou autre). Ayôrôfa Connect <strong>n’encaisse pas, ne détient pas, ne
+        séquestre pas et ne reverse aucune somme</strong> au titre de ces prestations, et ne perçoit
+        <strong> aucune commission</strong> sur celles-ci.</p>
+        <p>L’acceptation d’un devis au moyen des fonctionnalités de la Plateforme constitue un accord entre le client
+        et le professionnel. La Plateforme n’en est pas partie et n’en garantit pas l’exécution.</p>
       </S>
 
-      <S t="7. Propriété intellectuelle">
+      <S t="7. Vérifications et badges">
+        <p>Le badge <strong>« Vérifié »</strong> atteste que l’équipe d’Ayôrôfa a procédé, à la date de son
+        attribution, à des contrôles portant sur l’identité du membre et l’existence réelle de son activité.</p>
+        <p>Il ne constitue <strong>ni une garantie de la qualité des prestations, ni de leur bonne exécution, ni de la
+        solvabilité, ni de la conformité réglementaire</strong> du membre concerné, et n’engage pas la responsabilité
+        d’Ayôrôfa Connect. Il en va de même des autres badges (Expert, Top Prestataire, Premium, Partenaire), des avis
+        et des notes, qui émanent des membres et reflètent leur seule appréciation. Un badge peut être retiré à tout
+        moment.</p>
+      </S>
+
+      <S t="8. Responsabilité">
+        <p>Ayôrôfa Connect ne garantit ni la qualité, ni la sécurité, ni la légalité des prestations proposées, ni la
+        véracité ou l’exactitude des informations publiées par les membres, ni la capacité des parties à contracter ou
+        à exécuter leurs engagements.</p>
+        <p>Les <strong>litiges relatifs à une prestation, un paiement ou un contrat relèvent des seules parties
+        concernées</strong>. Il appartient à chaque membre de procéder à ses propres vérifications avant tout
+        engagement : demander des références, comparer plusieurs devis, formaliser l’accord par écrit et n’effectuer
+        de paiement qu’en connaissance de cause.</p>
+        <p>La Plateforme est fournie « en l’état ». Ayôrôfa s’efforce d’assurer un service continu et sécurisé, sans
+        pouvoir garantir l’absence d’interruptions, d’erreurs ou de pertes de données. Dans les limites permises par la
+        loi, la responsabilité d’Ayôrôfa ne saurait être engagée pour les dommages, directs ou indirects, résultant
+        des relations entre membres.</p>
+      </S>
+
+      <S t="9. Sommes perçues par Ayôrôfa Connect">
+        <p>Certaines fonctionnalités sont payantes (plans Pro et Vérifié, mises en avant, annonces boostées, offres
+        recruteurs, espaces sponsorisés). Les prix sont indiqués en francs CFA sur la page Formules.</p>
+        <p>Ces sommes rémunèrent <strong>exclusivement l’accès à des fonctionnalités de la Plateforme</strong>. Elles
+        ne constituent en aucun cas une rémunération, une commission ou une participation liée aux prestations
+        conclues entre membres.</p>
+        <p>Les abonnements sont valables pour la durée indiquée et ne sont pas remboursables une fois le service
+        activé, sauf disposition légale contraire. Ayôrôfa peut faire évoluer ses offres et tarifs pour l’avenir.</p>
+      </S>
+
+      <S t="10. Propriété intellectuelle">
         <p>La Plateforme, son nom, son logo, sa charte graphique, ses textes et son code sont la propriété d’Ayôrôfa.
         Toute reproduction, extraction ou réutilisation non autorisée est interdite. Les contenus publiés par les
         membres restent leur propriété, sous réserve de la licence prévue à l’article 3.</p>
       </S>
 
-      <S t="8. Données personnelles">
+      <S t="11. Données personnelles">
         <p>Le traitement de vos données est décrit dans la <Link href="/confidentialite">Politique de
         confidentialité</Link>, conformément à la loi ivoirienne n° 2013-450 relative à la protection des données à
         caractère personnel.</p>
       </S>
 
-      <S t="9. Responsabilité et disponibilité">
-        <p>La Plateforme est fournie « en l’état ». Ayôrôfa s’efforce d’assurer un service continu et sécurisé, sans
-        pouvoir garantir l’absence d’interruptions, d’erreurs ou de pertes de données. Dans les limites permises par
-        la loi, la responsabilité d’Ayôrôfa ne saurait être engagée pour les dommages indirects résultant de
-        l’utilisation de la Plateforme ou des relations entre membres.</p>
-      </S>
-
-      <S t="10. Résiliation">
+      <S t="12. Résiliation">
         <p>Vous pouvez supprimer votre compte à tout moment en nous contactant. Ayôrôfa peut suspendre ou clôturer un
-        compte en cas de violation des présentes conditions. Les articles 3, 5, 7 et 9 survivent à la clôture.</p>
+        compte en cas de violation des présentes conditions. Les articles 3, 5, 6, 7, 8 et 10 survivent à la clôture.</p>
       </S>
 
-      <S t="11. Droit applicable">
+      <S t="13. Droit applicable">
         <p>Les présentes conditions sont régies par le droit ivoirien. Tout litige sera soumis, à défaut d’accord
         amiable, aux juridictions compétentes d’Abidjan.</p>
         <p className="muted sm">Contact : contact@ayorofa.com — Ayôrôfa, Abidjan, Côte d’Ivoire.</p>
