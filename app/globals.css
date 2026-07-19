@@ -669,3 +669,13 @@ input,select,textarea{min-height:44px}
 .mention-legale{margin:18px 0 0;padding:12px 14px;background:#FBF8F1;border:1px solid var(--line);
   border-radius:11px;font-size:.8rem;line-height:1.5;color:var(--muted)}
 .mention-legale a{color:var(--gold-d);text-decoration:underline}
+/* ── Centre de contrôle admin ── */
+.centre-etat{margin-top:16px;padding:14px 16px;border-radius:13px;font-size:.95rem;
+  background:#FDF3E3;border:1px solid var(--gold);color:#5C4718}
+.centre-etat.ok{background:#F1F8F3;border-color:#BFDCC9;color:#1A6B50}
+.centre-item{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-bottom:10px}
+.centre-actions{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+@media(max-width:520px){
+  .centre-actions{width:100%;margin-left:0}
+  .centre-actions .btn{flex:1}
+}
