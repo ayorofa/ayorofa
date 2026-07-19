@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../lib/supabaseClient';
-
+import { METIERS, metierBySlug } from '../data/metiers';
 /* ── Redirection : un membre connecté va droit à son fil ── */
 export function RedirectSiConnecte() {
   const router = useRouter();
@@ -132,6 +132,54 @@ export function StatsDirect() {
           <span className="ay-stat-l">{l}</span>
         </div>
       ))}
+    </div>
+  );
+}
+/* ══════════════════════════════════════════════════════════
+   MÉTIERS VIVANTS — n'affiche que les métiers où il y a
+   réellement des professionnels. Un visiteur ne tombe jamais
+   sur une catégorie vide.
+   ══════════════════════════════════════════════════════════ */
+const DEFAUT = ['maconnerie', 'electricite', 'plomberie', 'carrelage',
+  'menuiserie', 'peinture', 'soudure', 'climatisation'];
+
+export function MetiersVivants() {
+  const [liste, setListe] = useState(null);
+
+  useEffect(() => {
+    if (!supabase) { setListe([]); return; }
+    (async () => {
+      try {
+        const { data } = await supabase.from('profiles')
+          .select('metier_principal').not('metier_principal', 'is', null).limit(2000);
+        const n = {};
+        (data || []).forEach((p) => { n[p.metier_principal] = (n[p.metier_principal] || 0) + 1; });
+        const tries = Object.keys(n)
+          .filter((slug) => metierBySlug(slug))
+          .sort((a, b) => n[b] - n[a])
+          .slice(0, 10)
+          .map((slug) => ({ slug, nom: metierBySlug(slug).name, n: n[slug] }));
+        setListe(tries);
+      } catch (e) { setListe([]); }
+    })();
+  }, []);
+
+  // Tant que la plateforme démarre : les métiers du bâtiment, sans compteur
+  const secours = DEFAUT
+    .map((slug) => ({ slug, nom: metierBySlug(slug) && metierBySlug(slug).name }))
+    .filter((x) => x.nom);
+
+  const aff = liste && liste.length ? liste : secours;
+
+  return (
+    <div className="ay-metiers">
+      {aff.map((m) => (
+        <a key={m.slug} href={`/membres?metier=${m.slug}`} className="ay-metier">
+          {m.nom}
+          {m.n ? <span className="ay-metier-n">{m.n}</span> : null}
+        </a>
+      ))}
+      <a href="/membres" className="ay-metier ay-metier-plus">Tous les métiers →</a>
     </div>
   );
 }
