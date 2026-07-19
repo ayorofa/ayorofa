@@ -50,7 +50,6 @@ export default function Signaler({ type, cibleId, auteurCible, me }) {
                 <p className="muted">Merci. Notre équipe va examiner ce contenu.</p>
               </>
             ) : (
-          {erreur && <p style={{ color: "#b3261e", fontSize: ".85rem", margin: "0 0 8px" }}>{erreur}</p>}
               <form onSubmit={envoyer}>
                 <h3>Signaler ce contenu</h3>
                 <p className="muted sm">Aidez-nous à garder la plateforme saine.</p>
@@ -66,6 +65,9 @@ export default function Signaler({ type, cibleId, auteurCible, me }) {
                 <textarea value={details} onChange={(e) => setDetails(e.target.value)} rows={3}
                   placeholder="Précisions (facultatif)"
                   style={{ width: '100%', padding: 11, border: '1px solid var(--line)', borderRadius: 10, fontFamily: 'inherit', fontSize: 16 }} />
+                {erreur && (
+                  <p style={{ color: '#b3261e', fontSize: '.85rem', margin: '10px 0 0' }}>{erreur}</p>
+                )}
                 <div style={{ display: 'flex', gap: 8, marginTop: 14 }}>
                   <button className="btn btn-sm" type="submit" disabled={busy}>{busy ? '…' : 'Envoyer'}</button>
                   <button className="btn btn-sm" type="button" onClick={() => setOuvert(false)}
