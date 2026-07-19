@@ -665,3 +665,7 @@ input,select,textarea{min-height:44px}
   .recu{max-width:100%}
   .sec{padding:0!important}
 }
+/* ── Mention légale d'intermédiation ── */
+.mention-legale{margin:18px 0 0;padding:12px 14px;background:#FBF8F1;border:1px solid var(--line);
+  border-radius:11px;font-size:.8rem;line-height:1.5;color:var(--muted)}
+.mention-legale a{color:var(--gold-d);text-decoration:underline}
