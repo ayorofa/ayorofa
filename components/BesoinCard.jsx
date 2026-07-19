@@ -130,7 +130,8 @@ const { error: eCom } = await supabase.from('commentaires').insert({ besoin: b.i
     e.preventDefault();
     if (!ctext.trim()) return;
     if (!me) { window.location.href = '/inscription'; return; }
-    await supabase.from('commentaires').insert({ besoin: b.id, auteur: me, texte: ctext.trim() });
+    const { error: eCom } = await supabase.from('commentaires').insert({ besoin: b.id, auteur: me, texte: ctext.trim() });
+    if (eCom) { alert('Votre commentaire n’a pas pu être envoyé. Réessayez.'); return; }
     setCtext(''); await loadComments();
   };
 
@@ -138,7 +139,8 @@ const { error: eCom } = await supabase.from('commentaires').insert({ besoin: b.i
     e.preventDefault();
     if (!rtext.trim()) return;
     if (!me) { window.location.href = '/inscription'; return; }
-    await supabase.from('commentaires').insert({ besoin: b.id, auteur: me, texte: rtext.trim(), parent: parentId });
+  const { error: eCom } = await supabase.from('commentaires').insert({ besoin: b.id, auteur: me, texte: rtext.trim(), parent: parentId });
+    if (eCom) { alert('Votre réponse n’a pas pu être envoyée. Réessayez.'); return; }
     setRtext(''); setRepondreA(null);
     await loadComments();
   };
