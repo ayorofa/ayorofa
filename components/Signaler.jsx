@@ -15,6 +15,7 @@ export default function Signaler({ type, cibleId, auteurCible, me }) {
   const [ouvert, setOuvert] = useState(false);
   const [motif, setMotif] = useState('spam');
   const [details, setDetails] = useState('');
+  const [erreur, setErreur] = useState('');
   const [fait, setFait] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -22,11 +23,13 @@ export default function Signaler({ type, cibleId, auteurCible, me }) {
     e.preventDefault();
     if (!me) { window.location.href = '/inscription'; return; }
     setBusy(true);
-    await supabase.from('signalements').insert({
+    const { error } = await supabase.from('signalements').insert({
       type, cible_id: cibleId, auteur_cible: auteurCible || null,
       signale_par: me, motif, details: details.trim() || null,
     });
-    setBusy(false); setFait(true);
+    setBusy(false);
+    if (error) { setErreur('Échec de l’envoi. Vérifiez votre connexion et réessayez.'); return; }
+    setErreur(''); setFait(true);
     setTimeout(() => { setOuvert(false); setFait(false); setDetails(''); }, 2200);
   };
 
@@ -47,6 +50,7 @@ export default function Signaler({ type, cibleId, auteurCible, me }) {
                 <p className="muted">Merci. Notre équipe va examiner ce contenu.</p>
               </>
             ) : (
+          {erreur && <p style={{ color: "#b3261e", fontSize: ".85rem", margin: "0 0 8px" }}>{erreur}</p>}
               <form onSubmit={envoyer}>
                 <h3>Signaler ce contenu</h3>
                 <p className="muted sm">Aidez-nous à garder la plateforme saine.</p>
