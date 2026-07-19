@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { metierBySlug } from '../data/metiers';
 import { PROS } from '../data/pros';
-import { RedirectSiConnecte, HeroRecherche, StatsDirect, Appariement } from './VitrineClient';
+import { RedirectSiConnecte, HeroRecherche, StatsDirect, Appariement, MetiersVivants } from './VitrineClient';
 
 export const metadata = {
   title: 'Ayôrôfa Connect — Le réseau professionnel de la Côte d’Ivoire',
@@ -169,15 +169,7 @@ export default function Vitrine() {
           <div className="ay-wrap">
             <p className="ay-kicker">52 corps de métiers</p>
             <h2 className="ay-h2">Le savoir-faire d’ici, au complet.</h2>
-            <div className="ay-metiers">
-              {CATEGORIES.map((slug) => {
-                const m = metierBySlug(slug);
-                return m ? (
-                  <Link key={slug} href={`/membres?metier=${slug}`} className="ay-metier">{m.name}</Link>
-                ) : null;
-              })}
-              <Link href="/membres" className="ay-metier ay-metier-plus">Tous les métiers →</Link>
-            </div>
+          <MetiersVivants />
           </div>
         </section>
 
@@ -376,6 +368,8 @@ const CSS = `
   min-height:46px;display:inline-flex;align-items:center;
   transition:border-color .16s ease,transform .16s ease,color .16s ease}
 .ay-metier:hover{border-color:var(--or);color:var(--or-d);transform:translateY(-2px)}
+.ay-metier-n{margin-left:7px;font-size:.72rem;font-weight:700;color:var(--or-d);
+  background:#F3ECDA;border-radius:99px;padding:2px 7px}
 .ay-metier-plus{background:var(--encre);color:var(--or-l);border-color:var(--encre)}
 .ay-metier-plus:hover{color:var(--or-l);background:var(--nuit)}
 
