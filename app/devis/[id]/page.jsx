@@ -64,7 +64,12 @@ export default function DetailDemande({ params }) {
   };
 
   const accepter = async (dv) => {
-    if (!window.confirm(`Accepter le devis de ${dv.prof.nom} à ${Number(dv.montant).toLocaleString('fr-FR')} F ?`)) return;
+    const avertissement =
+      `Accepter le devis de ${dv.prof.nom} à ${Number(dv.montant).toLocaleString('fr-FR')} F ?\n\n` +
+      "En acceptant, vous concluez un accord directement avec ce professionnel.\n" +
+      "Ayôrôfa Connect n'est pas partie à cet accord et n'intervient ni dans son " +
+      "exécution, ni dans le paiement, ni en cas de litige.";
+    if (!window.confirm(avertissement)) return;
     setBusy(true);
     await supabase.from('devis').update({ statut: 'accepte' }).eq('id', dv.id);
     await supabase.from('devis').update({ statut: 'refuse' }).eq('demande', id).neq('id', dv.id);
@@ -191,6 +196,14 @@ export default function DetailDemande({ params }) {
           )}
         </div>
       )}
+<p className="mention-legale">
+        Ayôrôfa Connect met en relation les membres. Les accords, prestations et paiements se
+        concluent directement entre le client et le professionnel : la plateforme n’y est pas
+        partie, n’encaisse aucune somme au titre des prestations et n’intervient pas en cas de
+        litige. Le badge <strong>Vérifié</strong> atteste de contrôles effectués à la date de son
+        attribution et ne garantit ni la qualité ni la bonne exécution des travaux.{' '}
+        <Link href="/cgu">Conditions générales</Link>.
+      </p>
     </div></main>
   );
 }
