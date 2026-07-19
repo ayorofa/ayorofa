@@ -39,9 +39,9 @@ function NouvelleDemande() {
       catch (err) { setLoading(false); setMsg(err.message); return; }
     }
     const { data, error } = await supabase.from('demandes_devis').insert({
-      client: user.id, pour: pour || null,
+      client: user.id, pro: pour || null,
       titre: f.titre.trim(), description: f.description.trim() || null,
-      metier: f.metier, ville: f.ville || null,
+      metier: f.metier || null, lieu: f.ville || null,
       budget: f.budget ? Number(f.budget) : null, delai: f.delai.trim() || null,
       media, media_type,
     }).select().single();
