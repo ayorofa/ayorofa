@@ -21,29 +21,24 @@ export default function BesoinCard({ b, me }) {
   const [post, setPost] = useState(b);
   const [supprime, setSupprime] = useState(false);
   const [auteur, setAuteur] = useState({ nom: 'Utilisateur', avatar_url: null, verifie: false, badges: [] });
-  // réactions du post
   const [rx, setRx] = useState({ total: 0, mine: null, top: [] });
   const [pickPost, setPickPost] = useState(false);
-  // commentaires
   const [showC, setShowC] = useState(false);
   const [comments, setComments] = useState([]);
-  const [crx, setCrx] = useState({});            // réactions par commentaire
-  const [pickCmt, setPickCmt] = useState(null);  // picker ouvert sur quel commentaire
+  const [crx, setCrx] = useState({});
+  const [pickCmt, setPickCmt] = useState(null);
   const [ctext, setCtext] = useState('');
   const [repondreA, setRepondreA] = useState(null);
   const [rtext, setRtext] = useState('');
-  // édition du post
   const [menu, setMenu] = useState(false);
   const [edition, setEdition] = useState(false);
   const [eTitre, setETitre] = useState(b.titre || '');
   const [eDesc, setEDesc] = useState(b.description || '');
   const [busy, setBusy] = useState(false);
-  // candidature (offres d'emploi)
   const [postulerOuvert, setPostulerOuvert] = useState(false);
   const [candMsg, setCandMsg] = useState('');
   const [candCV, setCandCV] = useState(null);
   const [candEtat, setCandEtat] = useState('');
-  // édition d'un commentaire
   const [editCid, setEditCid] = useState(null);
   const [editCtxt, setEditCtxt] = useState('');
 
@@ -69,7 +64,6 @@ export default function BesoinCard({ b, me }) {
     })();
   }, [b.id, me]);
 
-  // ── réagir au post ──
   const reagirPost = async (emoji) => {
     setPickPost(false);
     if (!me) { window.location.href = '/inscription'; return; }
@@ -82,7 +76,6 @@ export default function BesoinCard({ b, me }) {
     await loadReactions();
   };
 
-  // ── commentaires (avec réponses et réactions) ──
   const loadComments = async () => {
     const { data } = await supabase.from('commentaires').select('*').eq('besoin', b.id).order('created_at', { ascending: true });
     const rows = data || [];
@@ -93,7 +86,6 @@ export default function BesoinCard({ b, me }) {
       (ps || []).forEach((p) => { nm[p.id] = { nom: p.nom || 'Utilisateur', avatar_url: p.avatar_url }; });
     }
     setComments(rows.map((c) => ({ ...c, ...(nm[c.auteur] || { nom: 'Utilisateur', avatar_url: null }) })));
-    // réactions des commentaires
     const cids = rows.map((c) => c.id);
     if (cids.length) {
       const { data: cr } = await supabase.from('reactions_commentaires')
@@ -140,7 +132,7 @@ export default function BesoinCard({ b, me }) {
     e.preventDefault();
     if (!rtext.trim()) return;
     if (!me) { window.location.href = '/inscription'; return; }
-  const { error: eCom } = await supabase.from('commentaires').insert({ besoin: b.id, auteur: me, texte: rtext.trim(), parent: parentId });
+    const { error: eCom } = await supabase.from('commentaires').insert({ besoin: b.id, auteur: me, texte: rtext.trim(), parent: parentId });
     if (eCom) { alert('Votre réponse n’a pas pu être envoyée. Réessayez.'); return; }
     setRtext(''); setRepondreA(null);
     await loadComments();
@@ -159,7 +151,6 @@ export default function BesoinCard({ b, me }) {
     await loadComments();
   };
 
-  // ── modifier / supprimer MON post ──
   const sauverPost = async (e) => {
     e.preventDefault();
     const estPost = b.type === 'post';
