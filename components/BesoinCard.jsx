@@ -76,9 +76,10 @@ export default function BesoinCard({ b, me }) {
     if (rx.mine === emoji) {
       await supabase.from('reactions').delete().eq('besoin', b.id).eq('auteur', me);
     } else {
-const { error: eCom } = await supabase.from('commentaires').insert({ besoin: b.id, auteur: me, texte: ctext.trim() });
-    if (eCom) { alert('Votre commentaire n’a pas pu être envoyé. Réessayez.'); return; }
-    setCtext(''); await loadComments();
+      await supabase.from('reactions').upsert(
+        { besoin: b.id, auteur: me, emoji }, { onConflict: 'besoin,auteur' });
+    }
+    await loadReactions();
   };
 
   // ── commentaires (avec réponses et réactions) ──
