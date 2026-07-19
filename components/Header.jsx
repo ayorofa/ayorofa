@@ -6,6 +6,7 @@ import UserNav from '@/components/UserNav';
 import IconMessages from '@/components/IconMessages';
 import BoutonTheme from '@/components/BoutonTheme';
 import SonNotif from '@/components/SonNotif';
+import Sentinelle from '@/components/Sentinelle';
 export default function Header() {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
@@ -27,6 +28,7 @@ export default function Header() {
         </nav>
 
         <div className="hdr-actions">
+          <Sentinelle />
           <SonNotif />
           <BoutonTheme />
           <IconMessages />
