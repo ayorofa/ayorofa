@@ -4,6 +4,17 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabaseClient';
 
+/* Après connexion, on ramène le membre là où il allait (?suite=/publier).
+   Seuls les chemins internes sont acceptés : jamais de redirection
+   vers un site extérieur. */
+function destination() {
+  try {
+    const suite = new URLSearchParams(window.location.search).get('suite');
+    if (suite && /^\/(?!\/)/.test(suite)) return suite;
+  } catch (e) {}
+  return '/espace';
+}
+
 export default function Connexion() {
   const router = useRouter();
   const [f, setF] = useState({ email: '', password: '' });
@@ -17,7 +28,7 @@ export default function Connexion() {
     const { error } = await supabase.auth.signInWithPassword({ email: f.email, password: f.password });
     setLoading(false);
     if (error) { setMsg(error.message); return; }
-    router.push('/espace');
+    router.push(destination());
   };
   return (
     <main className="sec"><div className="wrap" style={{ maxWidth: 460 }}>

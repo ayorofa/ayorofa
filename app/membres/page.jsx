@@ -26,7 +26,7 @@ function Membres() {
   const [membres, setMembres] = useState([]);
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState('');
-  const [ville, setVille] = useState('');
+  const [ville, setVille] = useState(sp.get('ville') || '');
   const [metier, setMetier] = useState(sp.get('metier') || '');
   const [q, setQ] = useState(sp.get('q') || '');
   const [enLigneSeul, setEnLigneSeul] = useState(false);

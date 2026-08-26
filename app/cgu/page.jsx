@@ -5,8 +5,8 @@ export const metadata = {
   description: "Les règles d'utilisation de la plateforme Ayôrôfa Connect.",
 };
 
-const S = ({ t, children }) => (
-  <div className="card" style={{ marginTop: 14 }}>
+const S = ({ t, id, children }) => (
+  <div className="card" id={id} style={{ marginTop: 14, scrollMarginTop: 80 }}>
     <h2 style={{ fontSize: '1.05rem', margin: 0 }}>{t}</h2>
     <div style={{ marginTop: 8 }}>{children}</div>
   </div>
@@ -70,7 +70,7 @@ export default function CGU() {
         et le professionnel. La Plateforme n’en est pas partie et n’en garantit pas l’exécution.</p>
       </S>
 
-      <S t="7. Vérifications et badges">
+      <S t="7. Vérifications et badges" id="verification">
         <p>Le badge <strong>« Vérifié »</strong> atteste que l’équipe d’Ayôrôfa a procédé, à la date de son
         attribution, à des contrôles portant sur l’identité du membre et l’existence réelle de son activité.</p>
         <p>Il ne constitue <strong>ni une garantie de la qualité des prestations, ni de leur bonne exécution, ni de la

@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { METIERS } from '@/data/metiers';
 import { VILLES } from '@/data/villes';
 import { uploadMedia } from '@/lib/media';
+import { prendreBrouillon } from '@/lib/brouillonBesoin';
 
 const TYPES = [
   { v: 'post', label: '📝 Publication simple' },
@@ -39,10 +40,30 @@ export default function Publier() {
     if (!supabase) { setReady(true); return; }
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { router.push('/connexion'); return; }
+      // Le visiteur est renvoyé vers la connexion, puis ramené ici :
+      // son brouillon l'attend, il n'a rien à ressaisir.
+      if (!user) { router.push('/connexion?suite=/publier'); return; }
       const { data } = await supabase.from('profiles').select('type').eq('id', user.id).single();
       if (data && data.type === 'entreprise') setF((v) => ({ ...v, type: 'offre_emploi' }));
       else if (data && data.type === 'chercheur') setF((v) => ({ ...v, type: 'recherche' }));
+
+      // Besoin préparé depuis la page d'accueil (bloc « Vous avez un projet ? »)
+      const brouillon = prendreBrouillon();
+      if (brouillon) {
+        const c = brouillon.champs || {};
+        setF((v) => ({
+          ...v,
+          type: c.type || v.type,
+          metier: c.metier || v.metier,
+          ville: c.ville || v.ville,
+          description: c.description || v.description,
+          titre: v.titre || (c.description ? c.description.trim().slice(0, 80) : ''),
+        }));
+        if (brouillon.fichier) {
+          setFichier(brouillon.fichier);
+          setApercu(brouillon.fichier.type.startsWith('image/') ? URL.createObjectURL(brouillon.fichier) : null);
+        }
+      }
       setReady(true);
     })();
   }, [router]);
@@ -53,7 +74,7 @@ export default function Publier() {
     if (!supabase) { setMsg('Configuration Supabase manquante.'); return; }
     setLoading(true); setMsg('');
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { router.push('/connexion'); return; }
+    if (!user) { router.push('/connexion?suite=/publier'); return; }
     let media = null, media_type = null;
     if (fichier) {
       try {

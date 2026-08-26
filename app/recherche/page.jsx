@@ -26,6 +26,8 @@ function Recherche() {
   const sp = useSearchParams();
   const router = useRouter();
   const [q, setQ] = useState(sp.get('q') || '');
+  // Localité passée par la boîte de recherche de la page d'accueil (« Où ? »).
+  const [ville, setVille] = useState(sp.get('ville') || '');
   const [me, setMe] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
   const [ouvert, setOuvert] = useState(false);
@@ -75,11 +77,12 @@ function Recherche() {
   };
 
   // ── lancer une recherche complète ──
-  const lancer = async (terme) => {
+  const lancer = async (terme, villeForcee) => {
+    const v = villeForcee === undefined ? ville : villeForcee;
     const t = terme.trim();
     if (!t) return;
     setQ(t); setOuvert(false); setCherche(true); setFait(false);
-    router.replace(`/recherche?q=${encodeURIComponent(t)}`);
+    router.replace(`/recherche?q=${encodeURIComponent(t)}${v ? `&ville=${encodeURIComponent(v)}` : ''}`);
     ajouterHistorique(t); setHistorique(lireHistorique());
     if (supabase) supabase.rpc('chercher_terme', { t }).then(() => {});
 
@@ -115,8 +118,9 @@ function Recherche() {
       if (vus.has(m.id)) return false; vus.add(m.id); return true;
     });
 
-    setResMembres(tousMembres);
-    setResAnnonces(annonces.data || []);
+    const memeVille = (x) => !v || String(x || '').toLowerCase() === v.toLowerCase();
+    setResMembres(tousMembres.filter((m) => memeVille(m.ville)));
+    setResAnnonces((annonces.data || []).filter((b) => memeVille(b.ville)));
     setCherche(false); setFait(true);
   };
 
@@ -132,6 +136,16 @@ function Recherche() {
             aria-label="Recherche" autoComplete="off" />
           <button className="btn" type="submit">🔎</button>
         </form>
+
+        {ville && (
+          <p className="r-titre" style={{ marginTop: 10 }}>
+            Résultats limités à <strong>{ville}</strong>{' '}
+            <button type="button" className="chip" style={{ marginLeft: 6 }}
+              onClick={() => { setVille(''); lancer(q, ''); }}>
+              Retirer le filtre ✕
+            </button>
+          </p>
+        )}
 
         {ouvert && suggestions.length > 0 && (
           <div className="r-sugg" role="listbox">

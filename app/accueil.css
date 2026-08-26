@@ -1,0 +1,565 @@
+/* ══════════════════════════════════════════════════════════
+   PAGE D'ACCUEIL — AYÔRÔFA CONNECT
+   la maison du savoir · Abidjan, Côte d'Ivoire
+
+   Tout est préfixé « ay- » et enfermé dans .ay : cette feuille
+   ne peut pas déborder sur le reste de l'application.
+
+   Répartition voulue par la charte :
+     ~70 % encre + blanc · ~20 % ivoire + crème · ~10 % or.
+   L'or reste rare et précieux. Le vert ne sert qu'à valider,
+   le rouge qu'à alerter — jamais de décoration.
+   ══════════════════════════════════════════════════════════ */
+
+.ay {
+  /* Palette officielle, reprise des tokens globaux */
+  --encre: var(--ayorofa-ink, #12100B);
+  --nuit: #1C1810;                 /* encre éclaircie, pour séparer deux blocs sombres */
+  --or: var(--ayorofa-gold, #C9A24B);
+  --or-clair: var(--ayorofa-gold-light, #E7C879);
+  --or-sombre: #8A6B22;            /* or lisible sur fond clair (contraste AA) */
+  --ivoire: var(--ayorofa-ivory, #F5F0E4);
+  --creme: var(--ayorofa-cream, #FAF7EF);
+  --confiance: var(--ayorofa-trust, #1A6B50);
+  --confiance-clair: #43A981;      /* même vert, éclairci pour rester lisible sur l'encre */
+
+  /* Surfaces — ce sont les seules valeurs qui basculent en mode sombre.
+     Les couleurs de marque ci-dessus, elles, ne bougent jamais : les
+     sections encre gardent leur texte ivoire dans les deux modes. */
+  --surface: #fff;                 /* fond des sections claires et des cartes */
+  --surface-alt: var(--creme);     /* fond des sections alternées */
+  --surface-douce: var(--ivoire);  /* pastilles, puces, fonds d'icône */
+  --trait: #E6DECB;                /* bordure fine sur fond clair */
+  --trait-sombre: #332C1E;         /* bordure fine sur fond encre */
+  --titre: var(--encre);           /* titres posés sur une surface claire */
+  --texte: #211D18;
+  --texte-doux: #5C5546;
+  --texte-clair: #D6CDB9;          /* sur fond encre */
+  --texte-clair-doux: #9E9581;
+
+  --display: var(--ay-display), 'Bricolage Grotesque', Georgia, serif;
+  --courant: var(--ay-texte), 'Figtree', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --rayon: 14px;
+  --rayon-l: 18px;
+  --ombre: 0 1px 2px rgba(18, 16, 11, .04), 0 6px 18px rgba(18, 16, 11, .05);
+  --ombre-h: 0 2px 4px rgba(18, 16, 11, .06), 0 12px 28px rgba(18, 16, 11, .09);
+
+  font-family: var(--courant);
+  color: var(--texte);
+  background: var(--surface);
+  overflow-x: clip;
+}
+.ay *, .ay *::before, .ay *::after { box-sizing: border-box; }
+.ay img { max-width: 100%; height: auto; display: block; }
+.ay ul, .ay ol { list-style: none; margin: 0; padding: 0; }
+
+/* ── Ossature ───────────────────────────────────────────── */
+.ay-cadre { width: 100%; max-width: 1180px; margin: 0 auto; padding-left: 20px; padding-right: 20px; }
+.ay-cadre-etroit { max-width: 760px; }
+.ay-sec { padding: 56px 0; background: var(--surface); }
+.ay-sec-creme { background: var(--surface-alt); }
+
+.ay-sec-tete {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap; margin-bottom: 26px;
+}
+.ay-sec-tete-centre { justify-content: center; text-align: center; }
+.ay-sec-tete-centre .ay-sous { margin-left: auto; margin-right: auto; }
+
+/* Quand une section pilotée par les données se masque, deux fonds
+   identiques peuvent se retrouver côte à côte : un filet les sépare. */
+.ay-sec:not(.ay-sec-creme) + .ay-sec:not(.ay-sec-creme),
+.ay-sec-creme + .ay-sec-creme { border-top: 1px solid var(--trait); }
+
+/* ── Typographie ────────────────────────────────────────── */
+.ay-h1 {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(2.1rem, 5.4vw, 3.9rem); line-height: 1.03;
+  letter-spacing: -.03em; color: var(--ivoire); margin: 14px 0 0; max-width: 17ch;
+  text-wrap: balance;
+}
+.ay-h2 {
+  font-family: var(--display); font-weight: 800;
+  font-size: clamp(1.5rem, 3.1vw, 2.3rem); line-height: 1.12;
+  letter-spacing: -.022em; color: var(--titre); margin: 6px 0 0; max-width: 22ch;
+  text-wrap: balance;
+}
+.ay-h2-clair { color: var(--ivoire); }
+.ay-or { color: var(--or-clair); }
+.ay-sec .ay-or, .ay-sec-creme .ay-or { color: var(--or-sombre); }
+
+.ay-oeil {
+  font-family: var(--display); font-weight: 600; font-size: .72rem;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--or-sombre); margin: 0;
+}
+.ay-oeil-clair { color: var(--or-clair); }
+
+.ay-sous {
+  font-size: 1rem; line-height: 1.6; color: var(--texte-doux);
+  margin: 10px 0 0; max-width: 56ch;
+}
+.ay-sous-clair { color: var(--texte-clair); }
+
+.ay-chapo {
+  font-size: clamp(1rem, 1.5vw, 1.12rem); line-height: 1.6;
+  color: var(--texte-clair); margin: 16px 0 0; max-width: 46ch;
+}
+
+.ay-surtitre {
+  display: inline-flex; align-items: center; gap: 9px; margin: 0;
+  font-family: var(--display); font-weight: 600; font-size: .72rem;
+  letter-spacing: .15em; text-transform: uppercase; color: var(--or-clair);
+  border: 1px solid rgba(201, 162, 75, .34); border-radius: 999px; padding: 7px 15px 7px 11px;
+}
+
+/* ── Boutons ────────────────────────────────────────────── */
+.ay-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  font-family: var(--display); font-weight: 600; font-size: .96rem;
+  border-radius: 12px; padding: 13px 22px; min-height: 50px;
+  border: 1.5px solid transparent; cursor: pointer; text-align: center;
+  transition: background .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+}
+.ay .ay-btn-or { background: var(--or); color: var(--encre); }
+.ay .ay-btn-or:hover { background: var(--or-clair); transform: translateY(-1px); }
+.ay .ay-btn-encre { background: var(--encre); color: var(--ivoire); }
+.ay-btn-encre:hover { background: var(--nuit); transform: translateY(-1px); }
+.ay .ay-btn-contour { background: transparent; color: var(--ivoire); border-color: rgba(231, 200, 121, .45); }
+.ay-btn-contour:hover { border-color: var(--or); background: rgba(201, 162, 75, .12); }
+.ay .ay-btn-contour-encre { background: transparent; color: var(--titre); border-color: var(--trait); }
+.ay-btn-contour-encre:hover { border-color: var(--or); background: #FFFBF1; }
+.ay-btn-plein { width: 100%; }
+
+.ay .ay-lien-plus {
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  font-family: var(--display); font-weight: 600; font-size: .9rem;
+  color: var(--or-sombre); min-height: 44px;
+}
+.ay .ay-lien-plus:hover { color: var(--titre); }
+.ay-lien-plus svg { transition: transform .18s ease; }
+.ay-lien-plus:hover svg { transform: translateX(3px); }
+.ay .ay-lien-plus-clair { color: var(--or-clair); }
+.ay .ay-lien-plus-clair:hover { color: var(--ivoire); }
+
+/* ══ 02·03 — HERO + RECHERCHE ═════════════════════════════ */
+.ay-hero { position: relative; background: var(--encre); isolation: isolate; overflow: hidden; }
+.ay-hero-fond { position: absolute; inset: 0; z-index: -1; }
+.ay-hero-fond::after {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 62% 58% at 76% 4%, rgba(201, 162, 75, .20), transparent 64%);
+}
+/* Le voile sombre ne sert qu'à faire tenir le texte sur une photo :
+   sans photo, il masquerait inutilement la silhouette dessinée. */
+.ay-hero-fond--photo::after {
+  background:
+    radial-gradient(ellipse 62% 58% at 76% 4%, rgba(201, 162, 75, .22), transparent 64%),
+    linear-gradient(180deg, rgba(18, 16, 11, .55) 0%, rgba(18, 16, 11, .88) 68%, var(--encre) 100%);
+}
+.ay-hero-photo { width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+.ay-hero-ville {
+  position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 58%;
+  color: var(--or); opacity: .26;
+}
+.ay-hero-in {
+  display: grid; grid-template-columns: 1fr; gap: 28px;
+  padding-top: 44px; padding-bottom: 52px; align-items: center;
+}
+.ay-hero-actions { display: flex; gap: 11px; flex-wrap: wrap; margin-top: 24px; }
+
+/* Boîte de recherche */
+.ay-boite {
+  background: var(--surface); border-radius: var(--rayon-l); padding: 18px;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, .30); max-width: 470px; width: 100%;
+}
+.ay-boite form { display: grid; gap: 12px; }
+.ay-champ { display: grid; gap: 6px; }
+.ay-champ label {
+  font-family: var(--display); font-weight: 600; font-size: .84rem; color: var(--titre);
+}
+.ay-champ-in {
+  display: flex; align-items: center; gap: 9px;
+  border: 1.5px solid var(--trait); border-radius: 11px; padding: 0 13px;
+  background: var(--surface); color: var(--texte-doux);
+  transition: border-color .16s ease;
+}
+.ay-champ-in:focus-within { border-color: var(--or); }
+.ay-champ-in svg { flex: 0 0 auto; }
+.ay-champ input {
+  flex: 1; min-width: 0; border: 0; outline: none; background: none;
+  padding: 13px 0; font-size: 16px; font-family: var(--courant); color: var(--texte);
+  min-height: 48px;
+}
+.ay-champ input::placeholder { color: #9C947F; }
+.ay-boite-go { width: 100%; }
+
+.ay-populaires { margin-top: 15px; border-top: 1px solid var(--trait); padding-top: 13px; }
+.ay-populaires-t {
+  display: block; font-size: .76rem; font-weight: 500; color: var(--texte-doux); margin-bottom: 8px;
+}
+.ay-populaires-l { display: flex; flex-wrap: wrap; gap: 7px; }
+.ay-puce {
+  font-family: var(--courant); font-size: .82rem; font-weight: 500; color: var(--texte);
+  background: var(--surface-douce); border: 1px solid transparent; border-radius: 999px;
+  padding: 8px 14px; min-height: 38px; cursor: pointer;
+  transition: border-color .16s ease, background .16s ease;
+}
+.ay-puce:hover { border-color: var(--or); background: #FFFBF1; }
+
+/* ══ 04 — INDICATEURS DE CONFIANCE ════════════════════════ */
+.ay-confiance {
+  background: var(--nuit);
+  border-top: 1px solid var(--trait-sombre); border-bottom: 1px solid var(--trait-sombre);
+}
+.ay-confiance-l {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px 14px; padding: 22px 0;
+}
+.ay-confiance-l li { display: flex; align-items: center; gap: 11px; min-width: 0; }
+.ay-confiance-ic {
+  flex: 0 0 auto; display: grid; place-items: center; width: 38px; height: 38px;
+  border-radius: 10px; background: rgba(201, 162, 75, .13); color: var(--or-clair);
+}
+.ay-confiance-l strong {
+  display: block; font-family: var(--display); font-weight: 600; font-size: .92rem;
+  color: var(--ivoire); line-height: 1.25;
+}
+.ay-confiance-l em {
+  display: block; font-style: normal; font-size: .78rem; color: var(--texte-clair-doux); margin-top: 2px;
+}
+
+/* ══ 05 — STATISTIQUES ════════════════════════════════════ */
+.ay-stats { background: var(--surface-alt); border-bottom: 1px solid var(--trait); }
+.ay-stats-l { display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px 14px; padding: 30px 0; margin: 0; }
+.ay-stat { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
+.ay-stat-ic {
+  flex: 0 0 auto; display: grid; place-items: center; width: 42px; height: 42px;
+  border-radius: 11px; background: var(--surface); border: 1px solid var(--trait); color: var(--or-sombre);
+}
+.ay-stat dt { font-family: var(--display); font-weight: 600; font-size: .88rem; color: var(--texte-doux); }
+.ay-stat-n {
+  display: block; font-weight: 800; font-size: clamp(1.5rem, 3.4vw, 2.1rem);
+  line-height: 1.05; letter-spacing: -.025em; color: var(--titre);
+  font-variant-numeric: tabular-nums;
+}
+.ay-stat dd { margin: 3px 0 0; font-size: .78rem; color: var(--texte-doux); line-height: 1.35; }
+
+/* ══ 06 — MÉTIERS POPULAIRES ══════════════════════════════ */
+.ay-metiers { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.ay-metier {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px; height: 100%;
+  background: var(--surface); border: 1px solid var(--trait); border-radius: var(--rayon);
+  padding: 18px 16px; box-shadow: var(--ombre);
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.ay-metier:hover { border-color: var(--or); box-shadow: var(--ombre-h); transform: translateY(-2px); }
+.ay-metier-ic { color: var(--or-sombre); }
+.ay .ay-metier-n { font-family: var(--display); font-weight: 600; font-size: .96rem; color: var(--titre); line-height: 1.25; }
+.ay-metier-c {
+  font-size: .74rem; font-weight: 700; color: var(--or-sombre);
+  background: var(--surface-douce); border-radius: 999px; padding: 3px 9px; margin-top: auto;
+}
+.ay-metier-tous { background: var(--encre); border-color: var(--encre); }
+.ay-metier-tous .ay-metier-ic, .ay-metier-tous .ay-metier-n { color: var(--or-clair); }
+.ay-metier-tous:hover { background: var(--nuit); border-color: var(--or); }
+
+/* ══ 07 — PROFESSIONNELS PRÈS DE CHEZ VOUS ════════════════ */
+.ay-pros {
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(232px, 1fr);
+  gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory;
+  padding-bottom: 6px; margin: 0 -20px; padding-left: 20px; padding-right: 20px;
+  scrollbar-width: thin;
+}
+.ay-pros > li { scroll-snap-align: start; min-width: 0; }
+.ay-pro {
+  display: flex; flex-direction: column; height: 100%;
+  background: var(--surface); border: 1px solid var(--trait); border-radius: var(--rayon);
+  padding: 18px; box-shadow: var(--ombre);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+.ay-pro:hover { border-color: var(--or); box-shadow: var(--ombre-h); }
+.ay-pro-tete { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.ay .ay-pro-nom { font-family: var(--display); font-weight: 600; font-size: 1.02rem; color: var(--titre); margin: 0; line-height: 1.25; }
+.ay-pro-metier { font-size: .86rem; color: var(--or-sombre); font-weight: 500; margin: 3px 0 0; }
+.ay-pro-entreprise { font-size: .82rem; color: var(--texte-doux); margin: 2px 0 0; }
+.ay-pro-ligne {
+  display: flex; align-items: center; gap: 6px;
+  font-size: .82rem; color: var(--texte-doux); margin: 7px 0 0;
+}
+.ay-pro-note { color: var(--texte); font-weight: 700; }
+.ay-pro-note svg { color: var(--or-sombre); }
+.ay-pro-note span { font-weight: 400; color: var(--texte-doux); }
+.ay-pro-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.ay-pro-tags li {
+  font-size: .74rem; color: var(--texte-doux);
+  background: var(--surface-alt); border: 1px solid var(--trait); border-radius: 999px; padding: 4px 10px;
+}
+.ay-pro-cta { margin-top: 16px; width: 100%; min-height: 44px; padding: 11px 16px; font-size: .9rem; }
+.ay-squelette {
+  display: block; height: 260px; border-radius: var(--rayon);
+  background: linear-gradient(100deg, var(--surface-douce) 30%, var(--trait) 50%, var(--surface-douce) 70%);
+  background-size: 220% 100%; animation: ayLueur 1.4s ease-in-out infinite;
+}
+@keyframes ayLueur { from { background-position: 140% 0; } to { background-position: -40% 0; } }
+
+/* ══ 08 — PUBLIER UN BESOIN ═══════════════════════════════ */
+.ay-projet { background: var(--encre); color: var(--texte-clair); }
+.ay-projet-in { display: grid; grid-template-columns: 1fr; gap: 26px; padding-top: 52px; padding-bottom: 52px; align-items: center; }
+.ay-form { display: grid; gap: 13px; margin-top: 22px; max-width: 520px; }
+.ay-form-duo { display: grid; gap: 13px; }
+.ay-form label {
+  display: grid; gap: 6px;
+  font-family: var(--display); font-weight: 600; font-size: .84rem; color: var(--ivoire);
+}
+.ay-form select, .ay-form textarea {
+  width: 100%; font-family: var(--courant); font-size: 16px; color: var(--texte);
+  background: var(--surface); border: 1.5px solid transparent; border-radius: 11px;
+  padding: 13px; min-height: 50px;
+}
+.ay-form textarea { min-height: 92px; resize: vertical; line-height: 1.5; }
+.ay-form select:focus, .ay-form textarea:focus { outline: none; border-color: var(--or); }
+.ay-form-photo { display: flex; align-items: center; gap: 11px; flex-wrap: wrap; }
+.ay-btn-fichier {
+  background: transparent; color: var(--ivoire); border-color: rgba(231, 200, 121, .45);
+  font-size: .88rem; padding: 11px 16px; min-height: 46px;
+}
+.ay-btn-fichier:hover { border-color: var(--or); background: rgba(201, 162, 75, .12); }
+.ay-form-photo-nom { font-size: .8rem; color: var(--texte-clair-doux); min-width: 0; overflow-wrap: anywhere; }
+.ay-form-photo-x {
+  background: none; border: 1px solid var(--trait-sombre); color: var(--texte-clair);
+  border-radius: 9px; width: 38px; height: 38px; min-height: 38px; cursor: pointer;
+}
+.ay-form-note { font-size: .78rem; color: var(--texte-clair-doux); margin: 2px 0 0; line-height: 1.5; }
+.ay-visuellement-cache {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Décor de remplacement tant qu'aucune photo sous licence n'est fournie */
+.ay-projet-visuel, .ay-pro-bloc-visuel { border-radius: var(--rayon-l); overflow: hidden; }
+.ay-projet-visuel img, .ay-pro-bloc-visuel img { width: 100%; height: 100%; object-fit: cover; }
+.ay-motif {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  width: 100%; aspect-ratio: 4 / 3; border-radius: var(--rayon-l); text-align: center;
+  background:
+    radial-gradient(circle at 26% 22%, rgba(201, 162, 75, .30), transparent 46%),
+    radial-gradient(circle at 78% 76%, rgba(231, 200, 121, .16), transparent 52%),
+    repeating-linear-gradient(135deg, rgba(201, 162, 75, .09) 0 1px, transparent 1px 16px),
+    var(--nuit);
+  border: 1px solid var(--trait-sombre);
+}
+.ay-motif-emblem { color: var(--or); opacity: .55; }
+.ay-motif-mots {
+  display: flex; flex-direction: column; gap: 5px;
+  font-family: var(--display); font-weight: 800; font-size: 1.35rem;
+  letter-spacing: -.02em; color: rgba(245, 240, 228, .58);
+}
+.ay-motif-mots em {
+  font-family: var(--courant); font-style: normal; font-weight: 500; font-size: .68rem;
+  letter-spacing: .22em; text-transform: uppercase; color: rgba(201, 162, 75, .72);
+}
+.ay-motif-or {
+  background:
+    radial-gradient(circle at 70% 26%, rgba(231, 200, 121, .28), transparent 48%),
+    repeating-linear-gradient(45deg, rgba(201, 162, 75, .10) 0 1px, transparent 1px 18px),
+    var(--encre);
+}
+
+/* ══ 09 — POUR LES PROFESSIONNELS ═════════════════════════ */
+.ay-pro-bloc { background: var(--nuit); color: var(--texte-clair); }
+.ay-pro-bloc-in { display: grid; grid-template-columns: 1fr; gap: 26px; padding-top: 52px; padding-bottom: 52px; align-items: center; }
+.ay-atouts { display: grid; gap: 11px; margin-top: 22px; }
+.ay-atouts li {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: .95rem; color: var(--ivoire); line-height: 1.45;
+}
+.ay-atouts svg { flex: 0 0 auto; margin-top: 1px; color: var(--confiance-clair); }
+
+/* ══ 10 — COMMENT ÇA MARCHE ═══════════════════════════════ */
+.ay-etapes { display: grid; grid-template-columns: 1fr; gap: 14px; counter-reset: etape; }
+.ay-etape {
+  background: var(--surface); border: 1px solid var(--trait);
+  border-radius: var(--rayon); padding: 22px 20px; box-shadow: var(--ombre);
+}
+.ay-etape-ic {
+  display: grid; place-items: center; width: 46px; height: 46px; border-radius: 12px;
+  background: var(--encre); color: var(--or-clair);
+}
+.ay-etape-n {
+  display: block; margin-top: 15px;
+  font-family: var(--display); font-weight: 800; font-size: .78rem;
+  letter-spacing: .16em; color: var(--or-sombre); line-height: 1;
+}
+.ay-etape-t { font-family: var(--display); font-weight: 600; font-size: 1.08rem; color: var(--titre); margin: 7px 0 5px; }
+.ay-etape-d { font-size: .9rem; line-height: 1.55; color: var(--texte-doux); margin: 0; }
+
+/* ══ 11 — OPPORTUNITÉS ════════════════════════════════════ */
+.ay-opps { display: grid; grid-template-columns: 1fr; gap: 12px; }
+.ay-opp {
+  position: relative; display: block; height: 100%;
+  background: var(--surface); border: 1px solid var(--trait); border-radius: var(--rayon);
+  padding: 18px 18px 16px; box-shadow: var(--ombre);
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.ay-opp:hover { border-color: var(--or); box-shadow: var(--ombre-h); transform: translateY(-2px); }
+.ay-opp-ic {
+  display: inline-grid; place-items: center; width: 38px; height: 38px; border-radius: 10px;
+  background: var(--surface-douce); color: var(--or-sombre);
+}
+.ay-opp-type {
+  position: absolute; top: 18px; right: 18px;
+  font-size: .72rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--or-sombre);
+}
+.ay .ay-opp-t {
+  font-family: var(--display); font-weight: 600; font-size: 1rem; line-height: 1.3;
+  color: var(--titre); margin: 13px 0 0;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.ay-opp-m { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; font-size: .84rem; color: var(--texte-doux); margin: 6px 0 0; }
+.ay-opp-q { display: flex; align-items: center; gap: 6px; font-size: .78rem; color: var(--texte-doux); margin: 10px 0 0; }
+
+/* ══ 12 — POURQUOI AYÔRÔFA CONNECT ════════════════════════ */
+.ay-raisons { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.ay-raison { background: var(--surface-alt); border: 1px solid var(--trait); border-radius: var(--rayon); padding: 20px 18px; }
+.ay-raison-ic {
+  display: grid; place-items: center; width: 42px; height: 42px; border-radius: 11px;
+  background: var(--surface); border: 1px solid var(--trait); color: var(--or-sombre);
+}
+.ay-raison-t { font-family: var(--display); font-weight: 600; font-size: 1rem; color: var(--titre); margin: 14px 0 5px; }
+.ay-raison-d { font-size: .89rem; line-height: 1.55; color: var(--texte-doux); margin: 0; }
+
+/* ══ 13 — TÉMOIGNAGES ═════════════════════════════════════ */
+.ay-temoignages { display: grid; grid-template-columns: 1fr; gap: 14px; }
+.ay-temoignage {
+  height: 100%; margin: 0; background: var(--surface); border: 1px solid var(--trait);
+  border-radius: var(--rayon); padding: 20px; box-shadow: var(--ombre);
+  display: flex; flex-direction: column;
+}
+.ay-temoignage-note { display: flex; gap: 3px; color: var(--or-sombre); margin: 0 0 12px; }
+.ay-temoignage blockquote { margin: 0; flex: 1; }
+.ay-temoignage blockquote p { font-size: .95rem; line-height: 1.6; color: var(--texte); margin: 0; }
+.ay-temoignage figcaption { display: flex; align-items: center; gap: 11px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--trait); }
+.ay-temoignage figcaption strong { display: block; font-family: var(--display); font-weight: 600; font-size: .92rem; color: var(--titre); }
+.ay-temoignage figcaption em { display: block; font-style: normal; font-size: .78rem; color: var(--texte-doux); margin-top: 2px; }
+
+/* ══ Questions fréquentes ═════════════════════════════════ */
+.ay-faq { display: grid; gap: 10px; }
+.ay-q { background: var(--surface); border: 1px solid var(--trait); border-radius: var(--rayon); padding: 0 18px; }
+.ay-q summary {
+  list-style: none; cursor: pointer; position: relative; padding: 17px 34px 17px 0;
+  font-family: var(--display); font-weight: 600; font-size: .98rem; color: var(--titre); min-height: 44px;
+}
+.ay-q summary::-webkit-details-marker { display: none; }
+.ay-q summary::after {
+  content: "+"; position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  font-size: 1.45rem; line-height: 1; color: var(--or-sombre);
+}
+.ay-q[open] summary::after { content: "–"; }
+.ay-q p { margin: 0 0 17px; font-size: .92rem; line-height: 1.62; color: var(--texte-doux); }
+
+/* ══ 15 — CTA FINAL ═══════════════════════════════════════ */
+.ay-final { background: var(--encre); position: relative; isolation: isolate; overflow: hidden; }
+.ay-final::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background: radial-gradient(ellipse 62% 70% at 50% 0%, rgba(201, 162, 75, .24), transparent 66%);
+}
+.ay-final-in { text-align: center; padding-top: 58px; padding-bottom: 64px; }
+.ay-final-emblem { display: inline-flex; color: var(--or); margin-bottom: 16px; }
+.ay-final .ay-h2 { margin-left: auto; margin-right: auto; max-width: 24ch; }
+.ay-final .ay-hero-actions { justify-content: center; }
+
+/* ══ Accessibilité ════════════════════════════════════════ */
+.ay a:focus-visible, .ay button:focus-visible, .ay input:focus-visible,
+.ay select:focus-visible, .ay textarea:focus-visible, .ay summary:focus-visible,
+.ay label.ay-btn:focus-within {
+  outline: 3px solid var(--or); outline-offset: 3px; border-radius: 8px;
+}
+.ay-hero a:focus-visible, .ay-projet a:focus-visible, .ay-pro-bloc a:focus-visible,
+.ay-final a:focus-visible, .ay-projet button:focus-visible {
+  outline-color: var(--or-clair);
+}
+
+/* ══ Tablette ─ 700 px ════════════════════════════════════ */
+@media (min-width: 700px) {
+  .ay-cadre { padding-left: 28px; padding-right: 28px; }
+  .ay-sec { padding: 64px 0; }
+  .ay-confiance-l { grid-template-columns: repeat(4, 1fr); padding: 24px 0; }
+  .ay-stats-l { grid-template-columns: repeat(4, 1fr); padding: 34px 0; }
+  .ay-metiers { grid-template-columns: repeat(3, 1fr); }
+  .ay-etapes { grid-template-columns: repeat(2, 1fr); }
+  .ay-opps { grid-template-columns: repeat(2, 1fr); }
+  .ay-raisons { grid-template-columns: repeat(2, 1fr); }
+  .ay-temoignages { grid-template-columns: repeat(2, 1fr); }
+  .ay-form-duo { grid-template-columns: 1fr 1fr; }
+  .ay-projet-in, .ay-pro-bloc-in { grid-template-columns: 1fr 1fr; padding-top: 62px; padding-bottom: 62px; }
+  .ay-pros { margin: 0 -28px; padding-left: 28px; padding-right: 28px; }
+}
+
+/* ══ Ordinateur ─ 1000 px ═════════════════════════════════ */
+@media (min-width: 1000px) {
+  .ay-hero-in {
+    grid-template-columns: minmax(0, 1.08fr) minmax(400px, .92fr);
+    gap: 48px; padding-top: 76px; padding-bottom: 88px;
+  }
+  .ay-hero-boite { justify-self: end; }
+  .ay-boite { max-width: 440px; }
+  .ay-metiers { grid-template-columns: repeat(5, 1fr); }
+  .ay-etapes { grid-template-columns: repeat(4, 1fr); }
+  .ay-opps { grid-template-columns: repeat(3, 1fr); }
+  .ay-raisons { grid-template-columns: repeat(3, 1fr); }
+  .ay-temoignages { grid-template-columns: repeat(3, 1fr); }
+  .ay-sec { padding: 76px 0; }
+
+  /* Au-delà de la tablette, les cartes de pros ne défilent plus :
+     elles se rangent en grille, quatre par ligne. */
+  .ay-pros {
+    grid-auto-flow: row; grid-template-columns: repeat(4, 1fr);
+    overflow: visible; margin: 0; padding-left: 0; padding-right: 0;
+  }
+  .ay-projet-in, .ay-pro-bloc-in { padding-top: 76px; padding-bottom: 76px; gap: 52px; }
+}
+
+@media (min-width: 1280px) {
+  .ay-cadre { padding-left: 32px; padding-right: 32px; }
+  .ay-metiers { grid-template-columns: repeat(9, 1fr); gap: 10px; }
+  .ay-metier { padding: 16px 12px; align-items: center; text-align: center; }
+  .ay-metier-n { font-size: .88rem; }
+  .ay-metier-c { align-self: center; }
+}
+
+/* ══ Mouvements réduits ═══════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .ay *, .ay *::before, .ay *::after { animation: none !important; transition: none !important; }
+  .ay-squelette { background: var(--surface-douce); }
+}
+
+/* ══ Mode sombre de l'application ═════════════════════════
+   Seules les surfaces basculent. Les sections encre (hero,
+   « Vous avez un projet ? », « Vous êtes professionnel ? »,
+   CTA final) gardent exactement la même identité : c'est la
+   même maison, éclairée autrement. */
+html[data-theme="sombre"] .ay {
+  --surface: #17130D;
+  --surface-alt: #13100A;
+  --surface-douce: #241E14;
+  --trait: #352D20;
+  --titre: #F2ECDD;
+  --texte: #EDE6D6;
+  --texte-doux: #ABA18C;
+  --or-sombre: var(--or-clair);
+  --ombre: 0 1px 2px rgba(0, 0, 0, .30), 0 6px 18px rgba(0, 0, 0, .34);
+  --ombre-h: 0 2px 4px rgba(0, 0, 0, .36), 0 12px 28px rgba(0, 0, 0, .44);
+}
+/* La boîte de recherche du hero reste une surface posée sur l'encre. */
+html[data-theme="sombre"] .ay-boite { background: #1E1912; }
+html[data-theme="sombre"] .ay-champ-in { background: #262016; border-color: #3A3226; }
+html[data-theme="sombre"] .ay-champ input { color: var(--texte); }
+/* Les champs du bloc « projet » sont sur fond encre dans les deux modes :
+   ils gardent une surface claire pour rester lisibles. */
+html[data-theme="sombre"] .ay-form select,
+html[data-theme="sombre"] .ay-form textarea { background: #262016; color: #EDE6D6; }
+html[data-theme="sombre"] .ay-metier-tous { background: #0C0A06; border-color: #0C0A06; }
+/* Sur fond sombre, un bouton encre ne se distingue plus : l'action
+   principale de la recherche reprend l'or, comme partout ailleurs. */
+html[data-theme="sombre"] .ay .ay-boite-go { background: var(--or); color: var(--encre); }
+html[data-theme="sombre"] .ay .ay-boite-go:hover { background: var(--or-clair); }

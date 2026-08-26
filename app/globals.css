@@ -1,11 +1,28 @@
 :root{
-  /* Charte Ayôrôfa */
+  /* ─────────────────────────────────────────────────────────
+     CHARTE AYÔRÔFA — tokens officiels (source unique de vérité).
+     Toute nouvelle couleur doit venir d'ici, jamais d'une valeur
+     écrite en dur dans un composant.
+     ───────────────────────────────────────────────────────── */
+  --ayorofa-ink:#12100B;         /* Encre — texte, navigation, fonds sombres */
+  --ayorofa-gold:#C9A24B;        /* Or Ayôrôfa — accents, marque, actions */
+  --ayorofa-gold-light:#E7C879;  /* Or clair — accents sur fonds sombres */
+  --ayorofa-ivory:#F5F0E4;       /* Ivoire — grandes sections, fonds doux */
+  --ayorofa-cream:#FAF7EF;       /* Crème — fonds alternés, respiration */
+  --ayorofa-trust:#1A6B50;       /* Vert confiance — FONCTIONNEL uniquement */
+  --ayorofa-alert:#B3261E;       /* Rouge alerte — erreurs, suppression */
+
+  /* Charte Ayôrôfa — alias historiques de l'application */
   --ink:#161310; --ink2:#221d17; --ink3:#2c2519;
   --gold:#c9a24b; --gold-d:#a9863a; --gold-l:#e7c879;
   --ivoire:#f2ecdd; --terre:#b5683e;
   --bg:#faf7f0; --card:#ffffff; --line:#e8e0cd;
   --text:#211d18; --muted:#7d7466; --ok:#2e7d5b;
   --bnav-h:64px;
+
+  /* Typographie de marque (chargée par next/font sur la page d'accueil) */
+  --ayorofa-display:'Bricolage Grotesque',Georgia,serif;
+  --ayorofa-texte:'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -41,9 +58,11 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 /* menu déroulant mobile */
 .sheet-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:55}
 .sheet{position:fixed;top:58px;right:0;width:min(84vw,320px);bottom:0;background:#fff;z-index:56;
-  transform:translateX(100%);transition:transform .22s ease;display:flex;flex-direction:column;padding:10px 0;
-  box-shadow:-10px 0 30px rgba(0,0,0,.15);overflow-y:auto}
-.sheet.open{transform:translateX(0)}
+  transform:translateX(100%);transition:transform .22s ease,visibility .22s ease;display:flex;flex-direction:column;padding:10px 0;
+  box-shadow:-10px 0 30px rgba(0,0,0,.15);overflow-y:auto;
+  /* fermé, le menu sort aussi du parcours clavier et des lecteurs d'écran */
+  visibility:hidden}
+.sheet.open{transform:translateX(0);visibility:visible}
 .sheet a{padding:16px 22px;font-size:1.05rem;font-weight:600;border-bottom:1px solid var(--line);color:var(--text);min-height:56px;display:flex;align-items:center}
 .sheet a:active{background:#faf5ea}
 .sheet .sheet-sm{font-size:.9rem;font-weight:500;color:var(--muted);border-bottom:none}
@@ -678,4 +697,46 @@ input,select,textarea{min-height:44px}
 @media(max-width:520px){
   .centre-actions{width:100%;margin-left:0}
   .centre-actions .btn{flex:1}
+}
+
+/* ══════════════════════════════════════════════════════════
+   EN-TÊTE & PIED DE PAGE — refonte §01 et §16
+   Signature de marque, navigation principale, colonnes de liens.
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Signature de marque ── */
+.brand-mots{display:inline-flex;flex-direction:column;line-height:1.05}
+.brand-mots em{font-style:normal;font-size:.6rem;font-weight:500;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--gold);opacity:.85;margin-top:3px}
+.hdr .brand{gap:9px;align-items:center;font-size:1.05rem;white-space:nowrap}
+/* La signature ne s'affiche que si la barre a la place de la porter. */
+@media(max-width:1179px){ .hdr .brand-mots em{display:none} }
+
+/* ── Navigation principale ── */
+.nav-d{gap:15px}
+.nav-d a{white-space:nowrap;font-size:.92rem}
+.nav a.nav-on{color:#fff;position:relative}
+.nav a.nav-on:after{content:"";position:absolute;left:0;right:0;bottom:-7px;height:2px;
+  background:var(--gold);border-radius:2px}
+.nav-connexion{font-weight:600}
+.btn.nav-creer{background:var(--gold);color:var(--ink);font-weight:700;white-space:nowrap}
+.btn.nav-creer:hover{background:var(--gold-l)}
+
+/* ── Pied de page ── */
+.ftr-marque{max-width:300px}
+.ftr-signature{margin:12px 0 0;font-size:.92rem;color:var(--gold-l);font-weight:600;line-height:1.4}
+.ftr-lieu{margin:6px 0 0;font-size:.82rem;color:#96897a}
+.ftr-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px 18px;flex:1}
+.ftr-col-t{font-size:.78rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--gold);margin:0 0 10px}
+.ftr-col ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.ftr-col a{font-size:.88rem;color:#cfc4ad;display:inline-block;padding:2px 0}
+.ftr-col a:hover{color:#fff;text-decoration:underline}
+
+@media(min-width:700px){
+  .ftr-cols{grid-template-columns:repeat(4,1fr);gap:28px}
+}
+@media(min-width:860px){
+  .ftr-in{align-items:flex-start;gap:48px}
+  .ftr-cols{max-width:760px}
 }

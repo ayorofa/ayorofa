@@ -40,13 +40,23 @@ export default function UserNav() {
   }, [pathname, uid]);
 
   if (!supabase) return <Link href="/espace">Mon espace</Link>;
-  if (!uid) return <Link href="/connexion">Connexion</Link>;
+
+  // Visiteur : les deux portes d'entrée de la maison (§01).
+  if (!uid) {
+    return (
+      <>
+        <Link href="/connexion" className="nav-connexion">Se connecter</Link>
+        <Link href="/inscription" className="btn btn-sm nav-creer">Créer mon profil</Link>
+      </>
+    );
+  }
 
   return (
     <>
       <Link href="/messages" style={{ position: 'relative' }}>
         Messages{unread > 0 && <span className="dot">{unread}</span>}
       </Link>
+      <Link href="/publier" className="btn btn-sm nav-creer">Publier</Link>
       <Link href="/espace" className="nav-me" aria-label="Mon espace">
         <Avatar url={profil && profil.avatar_url} nom={profil && profil.nom} size={30} />
       </Link>
