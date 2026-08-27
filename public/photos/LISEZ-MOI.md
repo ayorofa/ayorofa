@@ -1,13 +1,20 @@
 # Photographies de la page d'accueil
 
-Ce dossier est **volontairement vide**. Le cahier des charges interdit
-d'utiliser une image récupérée au hasard ou appartenant à un tiers sans
-licence : aucune photo n'est donc livrée avec le code.
+La provenance et la licence de chaque photo sont consignées dans
+`CREDITS.md`, à côté de ce fichier. N'ajoutez ici que des images dont la
+licence autorise l'usage commercial, et renseignez-les dans `CREDITS.md`.
 
-Tant qu'aucune photo n'est fournie, la page d'accueil affiche son décor
-dessiné (silhouette urbaine dans le hero, panneau de marque dans les deux
-grands blocs). La page est complète et rapide en l'état — il n'y a pas
-d'image cassée ni d'emplacement vide.
+## État actuel
+
+| Emplacement | Fichier | Statut |
+|---|---|---|
+| Hero | `hero-abidjan.webp` | en service |
+| « Vous avez un projet ? » | — | décor dessiné |
+| « Vous êtes professionnel ? » | — | décor dessiné |
+
+Tant qu'un emplacement reste à `null` dans `data/accueil.js`, la section
+affiche son panneau de marque dessiné. La page est complète et rapide en
+l'état — il n'y a ni image cassée ni emplacement vide.
 
 ## Ajouter vos visuels
 

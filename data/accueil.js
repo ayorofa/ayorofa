@@ -30,7 +30,10 @@ export const NB_LOCALITES =
 
 export const PHOTOS = {
   // Grand visuel du hero — une scène professionnelle à Abidjan.
-  hero: { src: null, alt: '' },
+  hero: {
+    src: '/photos/hero-abidjan.webp',
+    alt: 'Vue aérienne d’un grand échangeur urbain, de ses avenues et de la lagune',
+  },
   // Bloc « Vous avez un projet ? »
   projet: { src: null, alt: '' },
   // Bloc « Vous êtes professionnel ? »
