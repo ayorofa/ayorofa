@@ -9,8 +9,8 @@ licence autorise l'usage commercial, et renseignez-les dans `CREDITS.md`.
 | Emplacement | Fichier | Statut |
 |---|---|---|
 | Hero | `hero-abidjan.webp` | en service |
-| « Vous avez un projet ? » | — | décor dessiné |
-| « Vous êtes professionnel ? » | — | décor dessiné |
+| « Vous avez un projet ? » | `projet.webp` | en service |
+| « Vous êtes professionnel ? » | `professionnel.webp` | en service |
 
 Tant qu'un emplacement reste à `null` dans `data/accueil.js`, la section
 affiche son panneau de marque dessiné. La page est complète et rapide en

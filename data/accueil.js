@@ -35,9 +35,15 @@ export const PHOTOS = {
     alt: 'Vue aérienne d’un grand échangeur urbain, de ses avenues et de la lagune',
   },
   // Bloc « Vous avez un projet ? »
-  projet: { src: null, alt: '' },
+  projet: {
+    src: '/photos/projet.webp',
+    alt: 'Une cliente choisit des tissus et des vêtements dans une boutique',
+  },
   // Bloc « Vous êtes professionnel ? »
-  professionnel: { src: null, alt: '' },
+  professionnel: {
+    src: '/photos/professionnel.webp',
+    alt: 'Un artisan au travail devant son établi, dans son atelier',
+  },
 };
 
 /* Recherches populaires proposées sous la barre du hero.

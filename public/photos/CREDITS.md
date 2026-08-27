@@ -13,10 +13,25 @@ Les identifiants ci-dessous permettent de retrouver chaque photo à l'adresse
 | Fichier | Emplacement | Source | Photographe | Identifiant |
 |---|---|---|---|---|
 | `hero-abidjan.webp` | Hero | Pexels | silveremeya | 7381782 |
+| `projet.webp` | « Vous avez un projet ? » | Pexels | god-picture | 14470155 |
+| `professionnel.webp` | « Vous êtes professionnel ? » | Pexels | bigshowlamar | 18651249 |
 
-Traitement appliqué : redimensionnée à 1500 px de large, très légèrement
-adoucie (le voile sombre du hero masque le détail fin), encodée en WebP
-qualité 70 → 212 Ko. L'originale fait 4000 × 3000 px.
+Traitements appliqués :
+
+- `hero-abidjan.webp` — redimensionnée à 1500 px de large, très légèrement
+  adoucie (le voile sombre du hero masque le détail fin), WebP qualité 70
+  → 212 Ko. Originale : 4000 × 3000 px.
+- `projet.webp` — recadrée en 4:3 sur la cliente (l'originale est en format
+  portrait), 1000 px de large, WebP qualité 76 → 102 Ko.
+  Originale : 1944 × 2750 px.
+- `professionnel.webp` — recadrée en 4:3 sur l'artisan, 1000 px de large,
+  WebP qualité 76 → 98 Ko. Originale : 4000 × 5600 px.
+
+Note sur le recadrage de `professionnel.webp` : la source est en portrait,
+et un cadre 4:3 ne peut couvrir que 53 % de sa hauteur. Il fallait choisir
+entre le visage de l'artisan et la meuleuse avec ses étincelles ; le bloc
+s'adressant aux professionnels eux-mêmes, c'est la personne qui a été
+retenue.
 
 ## Disponible, non utilisée
 
@@ -40,11 +55,13 @@ photographe**. Si la photo vient d'une autre ville, il faut basculer sur
 
 ## Non retenues
 
-Trois autres photos avaient été proposées pour le hero :
+Proposées pour le hero, écartées pour cause de format portrait :
+`pexels-kindelmedia-8488005`, `pexels-kgstudios-36520424`,
+`pexels-sinalmultimedia-30188152`.
 
-- `pexels-kindelmedia-8488005` — format portrait ;
-- `pexels-kgstudios-36520424` — format portrait ;
-- `pexels-sinalmultimedia-30188152` — format portrait.
-
-Les deux dernières conviendraient bien au bloc « Vous êtes professionnel ? »,
-qui attend un format 4:3.
+`pexels-tima-miroshnichenko-5717198` (salle de réunion, femme au
+smartphone) a été écartée pour une autre raison : le §15 du cahier des
+charges demande explicitement d'éviter l'esthétique « banque d'images
+corporate ». Sa palette froide gris-bleu s'oppose à la charte encre / or /
+ivoire, et le décor de bureau international ne dit rien de l'économie réelle
+que la plateforme sert.
