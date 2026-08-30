@@ -10,13 +10,35 @@ npm run dev        # http://localhost:3000
 ```
 
 ## Configurer
-Copie `.env.example` en `.env.local` et renseigne :
-```
-NEXT_PUBLIC_SITE_URL=https://btp.ayorofa.com
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX          # Google Analytics (optionnel)
-NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-...   # AdSense (optionnel)
-```
-Sans ces clés, le site tourne : les pubs affichent un espace réservé.
+Copie `.env.example` en `.env.local` et renseigne les variables. Le fichier
+d'exemple documente chacune d'elles et précise lesquelles restent côté serveur.
+
+Sans clé, le site tourne : les publicités affichent un espace réservé, l'assistant
+IA se désactive, et le paiement bascule en mode manuel.
+
+## Activer les paiements Mobile Money
+
+Le paiement automatique par CinetPay (Wave, Orange, MTN, Moov) est déjà codé —
+`app/api/paiement/initier` et `app/api/paiement/notifier`. La confirmation est
+revérifiée auprès de CinetPay côté serveur : le navigateur n'est jamais cru sur
+parole, et le traitement est idempotent.
+
+Trois étapes pour l'ouvrir :
+
+1. **Créer la table.** Exécuter `supabase/paiements.sql` dans Supabase →
+   SQL Editor. Sans elle, la toute première transaction échoue à l'insertion,
+   après que le client a payé.
+2. **Poser les clés dans Vercel** : `CINETPAY_API_KEY`, `CINETPAY_SITE_ID` et
+   `SUPABASE_SERVICE_ROLE_KEY`. Tant qu'elles manquent, `/api/paiement/initier`
+   répond 503 et l'application propose le paiement manuel, validé depuis
+   `/admin-plans`.
+3. **Faire un vrai paiement test** de petit montant sur son propre numéro. C'est
+   le seul moyen de vérifier la chaîne complète : redirection, notification,
+   activation du plan et du badge.
+
+Le plan Pro se vend sur le droit de publier, mais `PUBLICATION_GRATUITE` vaut
+`true` dans `data/plans.js` : publier reste gratuit. Ce plan n'a donc rien à
+vendre tant que ce booléen n'a pas basculé — c'est l'interrupteur du lancement.
 
 ## Déployer (Vercel)
 1. Pousse le dossier sur GitHub.
