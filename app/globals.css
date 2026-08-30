@@ -107,9 +107,13 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 
 /* formulaires : 16px = pas de zoom iOS */
 .form{display:grid;grid-template-columns:1fr;gap:14px}
-.form label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:.9rem}
-.form .full{grid-column:1/-1}
-.form input,.form select,.form textarea{padding:13px;border:1px solid var(--line);border-radius:11px;font-size:16px;font-family:inherit;min-height:48px;width:100%}
+/* Un élément de grille ne rétrécit pas sous la largeur de son contenu tant
+   que min-width vaut auto : une rangée de puces ou un <select> aux options
+   longues élargissait alors toute la colonne, et la page débordait. */
+.form>*{min-width:0}
+.form label{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:.9rem;min-width:0}
+.form .full{grid-column:1/-1;min-width:0}
+.form input,.form select,.form textarea{padding:13px;border:1px solid var(--line);border-radius:11px;font-size:16px;font-family:inherit;min-height:48px;width:100%;min-width:0}
 .form textarea{min-height:110px}
 .ok{border-color:var(--ok)}
 
@@ -265,12 +269,16 @@ h3{font-size:1.1rem;margin:0 0 .3em}
 .hero-slim p{font-size:.96rem;margin-bottom:14px}
 .feed{max-width:680px}
 .feed-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
-.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;
+  /* Sans min-width:0, un parent flex ou grid refuse de rétrécir sous la largeur
+     du contenu : overflow-x:auto ne s'enclenche jamais et la page déborde. */
+  min-width:0;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
 .chip{flex:0 0 auto;background:#fff;border:1px solid var(--line);color:var(--muted);
   border-radius:20px;padding:9px 16px;font-size:.88rem;font-weight:700;cursor:pointer;min-height:40px}
 .chip.on{background:var(--ink);color:var(--gold-l);border-color:var(--ink)}
-.feed-filters{display:flex;gap:8px;margin-top:10px}
-.feed-filters select{flex:1;padding:11px;border:1px solid var(--line);border-radius:11px;
+.feed-filters{display:flex;gap:8px;margin-top:10px;min-width:0;flex-wrap:wrap}
+.feed-filters select{flex:1 1 150px;min-width:0;padding:11px;border:1px solid var(--line);border-radius:11px;
   font-size:16px;background:#fff;color:var(--text);min-height:46px}
 .joinbox{background:linear-gradient(165deg,var(--ink),var(--ink2));color:var(--ivoire);
   border-radius:18px;padding:22px;margin-top:14px;text-align:center}
@@ -706,9 +714,9 @@ input,select,textarea{min-height:44px}
 
 /* ── Signature de marque ── */
 .brand-mots{display:inline-flex;flex-direction:column;line-height:1.05}
-.brand-mots em{font-style:normal;font-size:.6rem;font-weight:500;letter-spacing:.13em;
+.brand-mots em{font-style:normal;font-size:.7rem;font-weight:500;letter-spacing:.1em;
   text-transform:uppercase;color:var(--gold);opacity:.85;margin-top:3px}
-.hdr .brand{gap:9px;align-items:center;font-size:1.05rem;white-space:nowrap}
+.hdr .brand{gap:9px;align-items:center;font-size:1.05rem;white-space:nowrap;min-height:44px}
 /* La signature ne s'affiche que si la barre a la place de la porter. */
 @media(max-width:1179px){ .hdr .brand-mots em{display:none} }
 
@@ -729,8 +737,9 @@ input,select,textarea{min-height:44px}
 .ftr-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px 18px;flex:1}
 .ftr-col-t{font-size:.78rem;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
   color:var(--gold);margin:0 0 10px}
-.ftr-col ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
-.ftr-col a{font-size:.88rem;color:#cfc4ad;display:inline-block;padding:2px 0}
+.ftr-col ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.ftr-col a{font-size:.88rem;color:#cfc4ad;display:inline-flex;align-items:center;
+  min-height:44px;padding:2px 0}
 .ftr-col a:hover{color:#fff;text-decoration:underline}
 
 @media(min-width:700px){
